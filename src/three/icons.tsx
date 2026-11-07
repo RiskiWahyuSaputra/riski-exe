@@ -42,89 +42,242 @@ function Part({ children, ...props }: PartProps) {
   return <mesh {...props}>{children}</mesh>;
 }
 
-/* 01: a small developer with a headset */
+const SKIN = "#f3c9a2";
+const HAIR = "#1b1e30";
+const HOODIE = "#2279e0";
+const HOODIE_DARK = "#165ab0";
+const PHONES = "#22252f";
+
+/** Cylinder between two points, for thin parts such as the mic boom. */
+function Stick({ from, to, radius, children }: { from: THREE.Vector3; to: THREE.Vector3; radius: number; children: ReactNode }) {
+  const { position, quaternion, length } = useMemo(() => {
+    const direction = to.clone().sub(from);
+    return {
+      position: from.clone().add(to).multiplyScalar(0.5),
+      quaternion: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize()),
+      length: direction.length(),
+    };
+  }, [from, to]);
+
+  return (
+    <mesh position={position} quaternion={quaternion}>
+      <cylinderGeometry args={[radius, radius, length, 6]} />
+      {children}
+    </mesh>
+  );
+}
+
+function Headphones() {
+  const micFrom = useMemo(() => new THREE.Vector3(-0.6, -0.1, 0.06), []);
+  const micTo = useMemo(() => new THREE.Vector3(-0.27, -0.33, 0.43), []);
+
+  return (
+    <group>
+      {/* The band arcs ear to ear, over the top of the hair. */}
+      <Part>
+        <torusGeometry args={[0.61, 0.05, 6, 16, Math.PI]} />
+        <Flat color={PHONES} metal={0.3} rough={0.4} />
+      </Part>
+      <Part position={[0, 0.655, 0]} scale={[0.5, 0.45, 1.3]}>
+        <icosahedronGeometry args={[0.1, 0]} />
+        <Flat color="#6fdcff" glow="#2f8fe6" power={0.6} />
+      </Part>
+      {[-1, 1].map((side) => (
+        <group key={side} position={[side * 0.6, -0.02, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <Part position={[0, side * 0.055, 0]}>
+            <cylinderGeometry args={[0.2, 0.2, 0.07, 10]} />
+            <Flat color="#3a3e4c" rough={0.8} />
+          </Part>
+          <Part position={[0, -side * 0.035, 0]}>
+            <cylinderGeometry args={[0.21, 0.18, 0.11, 10]} />
+            <Flat color={PHONES} metal={0.3} rough={0.4} />
+          </Part>
+          <Part position={[0, -side * 0.1, 0]}>
+            <cylinderGeometry args={[0.11, 0.11, 0.025, 10]} />
+            <Flat color="#6fdcff" glow="#2f8fe6" power={0.8} />
+          </Part>
+        </group>
+      ))}
+      <Stick from={micFrom} to={micTo} radius={0.016}>
+        <Flat color={PHONES} />
+      </Stick>
+      <Part position={[-0.27, -0.33, 0.43]}>
+        <icosahedronGeometry args={[0.05, 0]} />
+        <Flat color="#6fdcff" glow="#2f8fe6" power={0.6} />
+      </Part>
+    </group>
+  );
+}
+
+function Face() {
+  const lids = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    // A quick blink every few seconds.
+    const blink = state.clock.elapsedTime % 3.6 < 0.11;
+    if (lids.current) lids.current.scale.y = blink ? 0.12 : 1;
+  });
+
+  return (
+    <group>
+      <group ref={lids} position={[0, -0.02, 0]}>
+        {[-1, 1].map((side) => (
+          <group key={side} position={[side * 0.19, 0, 0.455]} rotation={[0, side * 0.36, 0]}>
+            <Part scale={[0.078, 0.104, 0.03]}>
+              <icosahedronGeometry args={[1, 1]} />
+              <Flat color="#141726" rough={0.25} />
+            </Part>
+            <Part position={[-0.022, 0.04, 0.024]} scale={[0.026, 0.032, 0.012]}>
+              <icosahedronGeometry args={[1, 0]} />
+              <meshBasicMaterial color="#ffffff" toneMapped={false} />
+            </Part>
+          </group>
+        ))}
+      </group>
+      {[-1, 1].map((side) => (
+        <Part key={side} position={[side * 0.2, 0.135, 0.465]} rotation={[0, side * 0.36, side * -0.14]}>
+          <boxGeometry args={[0.15, 0.03, 0.02]} />
+          <Flat color={HAIR} />
+        </Part>
+      ))}
+      {[-1, 1].map((side) => (
+        <Part key={side} position={[side * 0.31, -0.14, 0.39]} rotation={[0, side * 0.62, 0]} scale={[0.082, 0.05, 0.012]}>
+          <icosahedronGeometry args={[1, 1]} />
+          <Flat color="#f09a8c" rough={0.8} />
+        </Part>
+      ))}
+      <Part position={[0, -0.075, 0.49]} scale={[0.03, 0.026, 0.03]}>
+        <icosahedronGeometry args={[1, 0]} />
+        <Flat color="#e2ab84" />
+      </Part>
+      <Part position={[0, -0.155, 0.462]} rotation={[0, 0, Math.PI]}>
+        <torusGeometry args={[0.07, 0.013, 4, 10, Math.PI]} />
+        <Flat color="#8a3c34" />
+      </Part>
+    </group>
+  );
+}
+
+function Hair() {
+  const fringe: [number, number, number, number, number][] = [
+    [-0.36, 0.2, 0.31, -0.5, 0.62],
+    [-0.19, 0.27, 0.41, -0.2, 0.74],
+    [0.01, 0.29, 0.44, 0.14, 0.78],
+    [0.2, 0.27, 0.41, 0.34, 0.7],
+    [0.37, 0.2, 0.3, 0.52, 0.58],
+  ];
+
+  return (
+    <group>
+      {/* A cap tilted back, so the hairline clears the face. */}
+      <Part rotation={[-0.62, 0, 0]} scale={[1.06, 1, 1]}>
+        <sphereGeometry args={[0.535, 12, 7, 0, Math.PI * 2, 0, 1.72]} />
+        <Flat color={HAIR} rough={0.55} />
+      </Part>
+      {fringe.map(([x, y, z, tilt, size]) => (
+        <Part key={x} position={[x, y, z]} rotation={[-0.3, 0, Math.PI + tilt]} scale={[size * 0.26, size * 0.42, size * 0.16]}>
+          <coneGeometry args={[1, 1, 5]} />
+          <Flat color={HAIR} rough={0.55} />
+        </Part>
+      ))}
+    </group>
+  );
+}
+
+/* 01: a small developer in a hoodie, wearing a headset */
 function Character({ active }: { active: Active }) {
   const arm = useRef<THREE.Group>(null);
   const body = useRef<THREE.Group>(null);
+  const head = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     const a = active.current;
-    if (arm.current) arm.current.rotation.z = 2.3 * a + 0.16 + Math.sin(t * 9) * 0.32 * a;
-    if (body.current) body.current.position.y = Math.abs(Math.sin(t * 4.5)) * 0.07 * a;
+    if (arm.current) arm.current.rotation.z = 0.14 + a * (2.05 + Math.sin(t * 8) * 0.24);
+    if (body.current) body.current.position.y = -0.03 + Math.abs(Math.sin(t * 4)) * 0.05 * a;
+    if (head.current) head.current.rotation.z = Math.sin(t * 4) * 0.05 * a;
   });
 
   return (
-    <group ref={body} position={[0, -0.16, 0]} scale={0.98}>
+    <group ref={body} scale={0.9}>
+      {/* Legs and sneakers */}
       {[-0.17, 0.17].map((x) => (
-        <group key={x} position={[x, -0.5, 0]}>
-          <Part position={[0, 0.06, 0]}>
-            <boxGeometry args={[0.2, 0.34, 0.22]} />
-            <Flat color="#142a63" />
+        <group key={x} position={[x, 0, 0]}>
+          <Part position={[0, -0.7, 0]}>
+            <capsuleGeometry args={[0.125, 0.2, 2, 8]} />
+            <Flat color="#1a2750" />
           </Part>
-          <Part position={[0, -0.15, 0.05]}>
-            <boxGeometry args={[0.23, 0.12, 0.34]} />
-            <Flat color="#f2fbff" />
+          <Part position={[0, -0.95, 0.07]} scale={[0.15, 0.1, 0.25]}>
+            <icosahedronGeometry args={[1, 1]} />
+            <Flat color="#f4f6fa" />
+          </Part>
+          <Part position={[0, -1.02, 0.07]}>
+            <boxGeometry args={[0.25, 0.04, 0.43]} />
+            <Flat color="#ff5a3c" />
           </Part>
         </group>
       ))}
-      <Part position={[0, -0.08, 0]} scale={[1, 1, 0.76]}>
-        <cylinderGeometry args={[0.28, 0.42, 0.64, 6]} />
-        <Flat color="#1f7fe0" />
+
+      {/* Hoodie */}
+      <Part position={[0, -0.14, 0]} scale={[1, 1, 0.76]}>
+        <capsuleGeometry args={[0.34, 0.14, 3, 8]} />
+        <Flat color={HOODIE} />
       </Part>
-      <Part position={[0, -0.14, 0.27]}>
-        <boxGeometry args={[0.3, 0.14, 0.06]} />
-        <Flat color="#125cb4" />
+      <Part position={[0, -0.5, 0]} scale={[1, 1, 0.76]}>
+        <cylinderGeometry args={[0.34, 0.33, 0.1, 8]} />
+        <Flat color={HOODIE_DARK} />
       </Part>
-      <Part position={[-0.4, -0.1, 0]} rotation={[0, 0, -0.16]}>
-        <boxGeometry args={[0.16, 0.54, 0.18]} />
-        <Flat color="#1f7fe0" />
+      <Part position={[0, -0.33, 0.235]} rotation={[-0.08, 0, 0]}>
+        <boxGeometry args={[0.36, 0.17, 0.05]} />
+        <Flat color={HOODIE_DARK} />
       </Part>
-      <group ref={arm} position={[0.34, 0.16, 0]}>
-        <Part position={[0.03, -0.26, 0]}>
-          <boxGeometry args={[0.16, 0.54, 0.18]} />
-          <Flat color="#1f7fe0" />
+      <Part position={[0, 0.1, -0.06]} rotation={[Math.PI / 2 - 0.3, 0, 0]}>
+        <torusGeometry args={[0.2, 0.1, 6, 10]} />
+        <Flat color={HOODIE_DARK} />
+      </Part>
+      {[-0.07, 0.07].map((x) => (
+        <Part key={x} position={[x, -0.03, 0.27]}>
+          <cylinderGeometry args={[0.012, 0.012, 0.18, 4]} />
+          <Flat color="#f4f6fa" />
         </Part>
-        <Part position={[0.03, -0.56, 0]}>
-          <icosahedronGeometry args={[0.1, 0]} />
-          <Flat color="#f0c49a" />
+      ))}
+      <Part position={[0, 0.1, 0.02]}>
+        <cylinderGeometry args={[0.13, 0.15, 0.14, 8]} />
+        <Flat color="#e2ab84" />
+      </Part>
+
+      {/* Resting arm */}
+      <group position={[-0.37, 0.03, 0]} rotation={[0, 0, -0.14]}>
+        <Part position={[0, -0.24, 0]}>
+          <capsuleGeometry args={[0.105, 0.3, 2, 8]} />
+          <Flat color={HOODIE} />
+        </Part>
+        <Part position={[0, -0.47, 0]}>
+          <icosahedronGeometry args={[0.095, 1]} />
+          <Flat color={SKIN} />
         </Part>
       </group>
-      <group position={[0, 0.54, 0]}>
-        <Part>
-          <icosahedronGeometry args={[0.44, 1]} />
-          <Flat color="#f0c49a" />
+
+      {/* Waving arm */}
+      <group ref={arm} position={[0.37, 0.03, 0]}>
+        <Part position={[0, -0.24, 0]}>
+          <capsuleGeometry args={[0.105, 0.3, 2, 8]} />
+          <Flat color={HOODIE} />
         </Part>
-        <Part position={[0, 0.17, -0.07]} scale={[1.02, 0.8, 1]}>
-          <dodecahedronGeometry args={[0.45, 0]} />
-          <Flat color="#10162e" />
+        <Part position={[0, -0.47, 0]}>
+          <icosahedronGeometry args={[0.095, 1]} />
+          <Flat color={SKIN} />
         </Part>
-        {[
-          [-0.26, 0.42, 0.14, 0.34],
-          [0, 0.5, 0.2, 0],
-          [0.26, 0.42, 0.14, -0.34],
-        ].map(([x, y, z, r]) => (
-          <Part key={x} position={[x, y, z]} rotation={[0.5, 0, r]}>
-            <coneGeometry args={[0.13, 0.28, 4]} />
-            <Flat color="#10162e" />
-          </Part>
-        ))}
-        {[-0.16, 0.16].map((x) => (
-          <Part key={x} position={[x, -0.02, 0.41]}>
-            <boxGeometry args={[0.08, 0.13, 0.03]} />
-            <Flat color="#0b1020" />
-          </Part>
-        ))}
-        <Part position={[0, 0.06, 0]} rotation={[0, Math.PI / 2, 0]}>
-          <torusGeometry args={[0.47, 0.035, 5, 10, Math.PI]} />
-          <Flat color="#6fdcff" glow="#2f8fe6" power={0.6} />
+      </group>
+
+      <group ref={head} position={[0, 0.54, 0]}>
+        <Part scale={[1.06, 0.97, 1]}>
+          <icosahedronGeometry args={[0.5, 2]} />
+          <Flat color={SKIN} rough={0.6} />
         </Part>
-        {[-0.47, 0.47].map((x) => (
-          <Part key={x} position={[x, 0.04, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.13, 0.13, 0.09, 6]} />
-            <Flat color="#6fdcff" />
-          </Part>
-        ))}
+        <Face />
+        <Hair />
+        <Headphones />
       </group>
     </group>
   );
