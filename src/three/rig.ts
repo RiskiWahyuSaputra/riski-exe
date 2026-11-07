@@ -58,9 +58,16 @@ export function useStage(): Stage {
     const ox = -(panel / 2) * worldW;
     const oy = portrait ? ((1 - availH) / 2) * worldH - worldH * 0.035 : 0;
 
-    const heroNdc: [number, number] = portrait ? [0.74, 0.84] : [0.86, 0.76];
-    const hero: [number, number] = [(heroNdc[0] * worldW) / 2 - ox, (heroNdc[1] * worldH) / 2 - oy];
-    const heroScale = (dist / 13) * (portrait ? 0.62 : 0.92);
+    // Sized in pixels, so the icon fits the section header on any screen.
+    const unitsPerPx = worldH / height;
+    const heroPx = width < 640 ? 62 : 118;
+    const heroRight = width < 640 ? 52 : 92;
+    const heroTop = width < 640 ? 54 : 72;
+    const hero: [number, number] = [
+      worldW / 2 - heroRight * unitsPerPx - ox,
+      worldH / 2 - heroTop * unitsPerPx - oy,
+    ];
+    const heroScale = (heroPx * unitsPerPx) / 2;
 
     return { dist, worldW, worldH, ox, oy, rx, rz, ry, portrait, hero, heroScale };
   }, [width, height]);

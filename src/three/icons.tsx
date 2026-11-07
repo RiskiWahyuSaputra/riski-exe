@@ -143,7 +143,7 @@ function Laptop({ active }: { active: Active }) {
     <group position={[0, -0.28, 0]} rotation={[0.12, 0, 0]} scale={1.08}>
       <Part>
         <boxGeometry args={[1.62, 0.09, 1.08]} />
-        <Flat color="#c4d8ee" metal={0.65} rough={0.3} />
+        <Flat color="#9db9dc" metal={0.65} rough={0.34} />
       </Part>
       <Part position={[0, 0.05, -0.08]}>
         <boxGeometry args={[1.42, 0.02, 0.56]} />
@@ -164,7 +164,7 @@ function Laptop({ active }: { active: Active }) {
       <group ref={lid} position={[0, 0.05, -0.52]}>
         <Part position={[0, 0.51, -0.02]}>
           <boxGeometry args={[1.62, 1.04, 0.06]} />
-          <Flat color="#c4d8ee" metal={0.65} rough={0.3} />
+          <Flat color="#9db9dc" metal={0.65} rough={0.34} />
         </Part>
         <Part position={[0, 0.51, -0.055]} rotation={[0, 0, Math.PI / 4]}>
           <boxGeometry args={[0.24, 0.24, 0.01]} />
