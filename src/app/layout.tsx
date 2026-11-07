@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource/michroma/latin-400.css";
 import "@fontsource/m-plus-rounded-1c/latin-400.css";
 import "@fontsource/m-plus-rounded-1c/latin-500.css";
 import "@fontsource/m-plus-rounded-1c/latin-700.css";
-import "@fontsource/share-tech-mono/latin-400.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#020617",
+  themeColor: "#000000",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

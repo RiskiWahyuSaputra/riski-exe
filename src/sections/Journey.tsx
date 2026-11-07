@@ -13,14 +13,14 @@ export function Journey() {
       <ol className="relative">
         <span
           aria-hidden
-          className="absolute bottom-3 left-[11px] top-3 w-[3px] bg-gradient-to-b from-cyan via-azure to-ocean sm:left-[15px]"
+          className="absolute bottom-3 left-[11px] top-3 w-[3px] bg-gradient-to-b from-cyan via-ice to-azure sm:left-[15px]"
         />
         {JOURNEY.map((entry, i) => (
           <li key={`${entry.title}-${entry.period}`} className="relative pb-5 pl-9 last:pb-0 sm:pl-12">
             <span
               aria-hidden
               className={`absolute left-[3px] top-4 h-[19px] w-[19px] rotate-45 border-2 border-ice sm:left-[7px] ${
-                entry.current ? "bg-cyan shadow-[0_0_14px_rgba(111,220,255,.95)]" : "bg-navy"
+                entry.current ? "bg-cyan shadow-[0_0_14px_rgba(255,230,60,.9)]" : "bg-navy"
               }`}
             />
             <Panel>

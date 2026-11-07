@@ -12,7 +12,7 @@ export function Label({ children, aside }: { children: ReactNode; aside?: ReactN
 
 export function Chip({ children }: { children: ReactNode }) {
   return (
-    <span className="t-sys inline-block border border-[var(--hairline)] bg-[rgba(10,50,120,.5)] px-2 py-0.5 text-[12px] text-ice">
+    <span className="t-sys inline-block border border-[var(--hairline)] bg-[rgba(255,255,255,.08)] px-2 py-0.5 text-[12px] text-ice">
       {children}
     </span>
   );

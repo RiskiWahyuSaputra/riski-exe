@@ -31,10 +31,15 @@ export function useControls() {
         const dir = e.key === "ArrowRight" ? 1 : -1;
         if (sys.phase === "browser") sys.step(dir);
         if (sys.phase === "section") sys.shift(dir);
-      } else if (e.key === "Enter" && !control && sys.phase === "browser") {
+      } else if ((e.key === "ArrowUp" || e.key === "ArrowDown") && sys.phase === "browser") {
+        e.preventDefault();
+        sys.stepRow(e.key === "ArrowDown" ? 1 : -1);
+      } else if (((e.key === "Enter" && !control) || e.key.toLowerCase() === "x") && sys.phase === "browser") {
         sys.open();
-      } else if (e.key === "Escape") {
+      } else if (e.key === "Escape" || e.key.toLowerCase() === "o") {
         sys.back();
+      } else if (e.key.toLowerCase() === "t" && sys.phase !== "boot") {
+        sys.toggleOptions();
       }
     };
 

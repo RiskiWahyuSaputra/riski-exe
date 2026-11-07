@@ -29,9 +29,9 @@ export function SaveLoader() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.18 }}
     >
-      <p className="t-title text-[15px] sm:text-[20px]">{save.file}</p>
-      <p className="t-sys mt-2 text-[14px] text-cyan">
-        LOADING SAVE DATA<span className="blink">...</span>
+      <p className="t-yellow text-[20px] sm:text-[28px]">{save.file}</p>
+      <p className="t-title mt-1 text-[16px] sm:text-[20px]">
+        Loading save data<span className="blink">...</span>
       </p>
       <div className="mt-4 flex w-full max-w-[420px] gap-[3px]">
         {Array.from({ length: BLOCKS }, (_, i) => (
@@ -39,13 +39,13 @@ export function SaveLoader() {
             key={i}
             className="h-3 flex-1"
             style={{
-              background: i < filled ? "var(--color-cyan)" : "rgba(160,220,255,.16)",
-              boxShadow: i < filled ? "0 0 8px rgba(111,220,255,.8)" : "none",
+              background: i < filled ? "#fff" : "rgba(0,0,0,.35)",
+              boxShadow: i < filled ? "0 0 8px rgba(255,255,255,.8)" : "none",
             }}
           />
         ))}
       </div>
-      <p className="t-sys mt-3 text-[12px] text-haze">DO NOT REMOVE MEMORY CARD 1</p>
+      <p className="t-title mt-3 text-[13px] sm:text-[15px]">Do not remove Memory Card 1</p>
     </motion.div>
   );
 }

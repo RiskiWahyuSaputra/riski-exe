@@ -14,12 +14,12 @@ export function Fallback() {
   return (
     <motion.nav
       aria-label="Save data"
-      className="fixed inset-x-3 top-[112px] z-20 side:left-6 side:right-[350px] side:top-[130px] min-[1200px]:right-[420px] short:top-[92px]"
+      className="fixed inset-x-3 top-[128px] z-20 mx-auto max-w-[760px] sm:top-[170px] short:top-[76px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <p className="t-sys mb-3 text-[12px] text-haze">3D RENDERER UNAVAILABLE ON THIS DEVICE. SLOT MENU LOADED.</p>
+      <p className="t-title mb-3 text-[13px]">3D RENDERER UNAVAILABLE ON THIS DEVICE. SLOT MENU LOADED.</p>
       <ul className="grid grid-cols-2 gap-2 side:grid-cols-3">
         {ALL_SAVES.slice(0, slotCount(secret)).map((save) => (
           <li key={save.hash}>
@@ -27,8 +27,8 @@ export function Fallback() {
               type="button"
               data-on={selected === save.index}
               className="btn !h-full w-full !flex-col !items-start !gap-0.5 !py-2 text-left"
-              onMouseEnter={() => select(save.index, "hover")}
-              onFocus={() => select(save.index, "tap")}
+              onMouseEnter={() => select(save.index)}
+              onFocus={() => select(save.index)}
               onClick={() => open(save.index)}
             >
               <span className="text-[11px] text-cyan">SLOT {save.slot}</span>

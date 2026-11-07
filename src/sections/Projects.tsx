@@ -64,7 +64,7 @@ export function Projects() {
                   onClick={() => choose(p.id)}
                   onMouseEnter={() => setActiveId(p.id)}
                   className={`flex min-h-[44px] w-full items-center gap-2.5 border-l-2 px-2 py-1.5 text-left transition-colors ${
-                    on ? "border-cyan bg-[rgba(111,220,255,.2)] text-snow" : "border-transparent text-ice/85"
+                    on ? "border-cyan bg-[rgba(255,255,255,.16)] text-snow" : "border-transparent text-ice/85"
                   }`}
                 >
                   <span className="t-sys text-[12px] text-haze">{String(i + 1).padStart(2, "0")}</span>

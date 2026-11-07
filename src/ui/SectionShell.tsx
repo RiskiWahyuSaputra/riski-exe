@@ -11,7 +11,7 @@ import { Profile } from "@/sections/Profile";
 import { Projects } from "@/sections/Projects";
 import { Stats } from "@/sections/Stats";
 import { Trophies } from "@/sections/Trophies";
-import { SoundToggles } from "./Hud";
+import { LegendButton } from "./Chrome";
 
 const CONTENT: Record<IconKind, ReactNode> = {
   character: <Profile />,
@@ -30,6 +30,7 @@ export function SectionShell() {
   const secret = useSystem((s) => s.secret);
   const back = useSystem((s) => s.back);
   const shift = useSystem((s) => s.shift);
+  const toggleOptions = useSystem((s) => s.toggleOptions);
   const heading = useRef<HTMLHeadingElement>(null);
   const body = useRef<HTMLDivElement>(null);
 
@@ -53,18 +54,16 @@ export function SectionShell() {
       exit={{ opacity: 0, scale: 1.03 }}
       transition={{ duration: 0.3 }}
     >
-      <header className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--hairline)] bg-gradient-to-b from-[rgba(2,10,40,.28)] to-transparent px-4 pb-3 pt-[max(14px,env(safe-area-inset-top))] sm:px-8 sm:pb-4 sm:pt-6 short:pb-1.5 short:pt-2">
-        <div className="min-w-0 pr-[92px] sm:pr-[170px]">
-          <p className="t-sys text-[12px] text-cyan sm:text-[14px]">
-            MEMORY CARD 1 / SAVE SLOT {save.slot}
-          </p>
-          <h1 key={save.file} ref={heading} tabIndex={-1} className="t-title glitch mt-1 truncate text-[19px] outline-none sm:text-[32px] short:mt-0 short:text-[18px]">
+      <header className="flex shrink-0 items-start justify-between gap-3 px-3 pb-2 pt-[max(12px,env(safe-area-inset-top))] sm:px-8 sm:pb-3 sm:pt-6 short:pb-1 short:pt-2">
+        <div className="min-w-0 pl-[64px] sm:pl-[112px] short:pl-[72px]">
+          <p className="t-title truncate text-[20px] leading-tight sm:text-[34px] short:text-[18px]">Memory Card 1</p>
+          <p className="t-title text-[13px] sm:text-[20px]">Save Slot {save.slot}</p>
+        </div>
+        <div className="shrink-0 text-right">
+          <h1 key={save.file} ref={heading} tabIndex={-1} className="t-yellow glitch text-[17px] leading-snug outline-none sm:text-[28px] short:text-[17px]">
             {save.file}
           </h1>
-          <p className="mt-0.5 text-[14px] font-medium text-ice sm:text-[16px] short:hidden">{save.title}</p>
-        </div>
-        <div className="absolute right-[190px] top-7 hidden lg:block">
-          <SoundToggles />
+          <p className="t-yellow text-[14px] leading-snug sm:text-[22px] short:hidden">{save.title}</p>
         </div>
       </header>
 
@@ -85,23 +84,28 @@ export function SectionShell() {
 
       <nav
         aria-label="Save navigation"
-        className="flex shrink-0 items-stretch justify-between gap-2 border-t border-[var(--hairline)] bg-gradient-to-t from-[rgba(2,10,40,.72)] to-transparent px-3 py-2.5 pb-[max(10px,env(safe-area-inset-bottom))] sm:px-8"
+        className="flex shrink-0 items-center justify-between gap-3 px-3 pb-[max(6px,env(safe-area-inset-bottom))] pt-1 text-[16px] sm:px-8 sm:pb-3 sm:text-[24px] short:text-[15px]"
       >
-        <button type="button" className="btn min-w-0 flex-1 !justify-start sm:max-w-[300px]" onClick={() => shift(-1)}>
+        <button type="button" className="legend min-w-0" onClick={() => shift(-1)}>
           <span aria-hidden>◄</span>
           <span className="sr-only">Previous: </span>
           <span className="hidden truncate sm:inline">{previous.file}</span>
-          <span className="sm:hidden">PREV</span>
+          <span className="sm:hidden">Prev</span>
         </button>
-        <button type="button" className="btn shrink-0" onClick={back}>
-          <span className="sm:hidden">BROWSER</span>
-          <span className="hidden sm:inline">RETURN TO BROWSER</span>
-          <span className="keycap only-mouse">ESC</span>
-        </button>
-        <button type="button" className="btn min-w-0 flex-1 !justify-end sm:max-w-[300px]" onClick={() => shift(1)}>
+        <div className="flex shrink-0 items-center gap-3 sm:gap-8">
+          <LegendButton glyph="circle" onClick={back}>
+            <span className="sm:hidden">Back</span>
+            <span className="hidden sm:inline">RETURN TO BROWSER</span>
+          </LegendButton>
+          <LegendButton glyph="triangle" onClick={toggleOptions}>
+            <span className="hidden sm:inline">Options</span>
+            <span className="sr-only sm:hidden">Options</span>
+          </LegendButton>
+        </div>
+        <button type="button" className="legend min-w-0" onClick={() => shift(1)}>
           <span className="sr-only">Next: </span>
           <span className="hidden truncate sm:inline">{next.file}</span>
-          <span className="sm:hidden">NEXT</span>
+          <span className="sm:hidden">Next</span>
           <span aria-hidden>►</span>
         </button>
       </nav>
@@ -109,14 +113,14 @@ export function SectionShell() {
       <AnimatePresence>
         {phase === "switching" && (
           <motion.div
-            className="absolute inset-0 z-10 grid place-items-center bg-[rgba(4,20,70,.72)]"
+            className="absolute inset-0 z-10 grid place-items-center bg-[rgba(0,0,0,.5)]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
           >
-            <p className="t-sys text-[15px] text-cyan">
-              LOADING SAVE DATA<span className="blink">...</span>
+            <p className="t-title text-[18px]">
+              Loading save data<span className="blink">...</span>
             </p>
           </motion.div>
         )}

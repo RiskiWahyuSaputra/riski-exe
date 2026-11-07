@@ -4,10 +4,9 @@ import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useSystem } from "@/lib/store";
 import { Boot } from "./Boot";
+import { BrowserChrome, OptionsWindow } from "./Chrome";
 import { Cursor } from "./Cursor";
 import { Fallback } from "./Fallback";
-import { FilePanel } from "./FilePanel";
-import { ControlBar, Hud } from "./Hud";
 import { Notices } from "./Notices";
 import { SaveLoader } from "./SaveLoader";
 import { SectionShell } from "./SectionShell";
@@ -26,15 +25,14 @@ export function Console() {
   return (
     <>
       <Stage />
-      {no3d && <div className="fixed inset-0 bg-gradient-to-b from-ocean via-navy to-abyss" />}
+      {no3d && <div className="fixed inset-0 bg-gradient-to-br from-[#b4b3af] via-[#85847f] to-[#14170f]" />}
       <AnimatePresence>
         {no3d && browsing && <Fallback key="menu" />}
-        {browsing && <Hud key="hud" />}
-        {browsing && <FilePanel key="file" />}
-        {browsing && <ControlBar key="bar" />}
+        {browsing && <BrowserChrome key="chrome" />}
         {phase === "loading" && <SaveLoader key="loader" />}
         {(phase === "section" || phase === "switching") && <SectionShell key="section" />}
       </AnimatePresence>
+      <OptionsWindow />
       <Notices />
       <Boot />
       <div className="crt" aria-hidden />

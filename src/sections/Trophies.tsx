@@ -59,7 +59,7 @@ export function Trophies() {
             <button
               type="button"
               onClick={() => setOpenId(cert.id)}
-              className="panel group block h-full w-full p-2 text-left transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(111,220,255,.45)]"
+              className="panel group block h-full w-full p-2 text-left transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(255,255,255,.5)]"
             >
               <span className="relative block aspect-[4/3] overflow-hidden bg-abyss">
                 <Image
@@ -82,7 +82,7 @@ export function Trophies() {
       <AnimatePresence>
         {current && (
           <motion.div
-            className="fixed inset-0 z-50 grid place-items-center bg-[rgba(2,8,30,.82)] p-3 sm:p-8"
+            className="fixed inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,.8)] p-3 sm:p-8"
             role="dialog"
             aria-modal="true"
             aria-label={current.title}

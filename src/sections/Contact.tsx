@@ -10,7 +10,7 @@ function Channel({ label, value, href }: { label: string; value: string; href: s
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel="noreferrer"
-      className="flex min-h-[52px] items-center justify-between gap-4 border-b border-[var(--hairline)] px-1 py-2 transition-colors last:border-b-0 hover:bg-[rgba(111,220,255,.16)]"
+      className="flex min-h-[52px] items-center justify-between gap-4 border-b border-[var(--hairline)] px-1 py-2 transition-colors last:border-b-0 hover:bg-[rgba(255,255,255,.12)]"
     >
       <span className="t-sys text-[13px] text-cyan">{label}</span>
       <span className="min-w-0 truncate text-[15px] font-medium text-snow">{value}</span>

@@ -12,27 +12,27 @@
 @custom-variant short (@media (max-height: 560px));
 
 @theme {
-  --font-title: "Michroma", "Eurostile", sans-serif;
+  --font-title: "M PLUS Rounded 1c", "Trebuchet MS", sans-serif;
   --font-sans: "M PLUS Rounded 1c", "Trebuchet MS", sans-serif;
-  --font-sys: "Share Tech Mono", ui-monospace, monospace;
+  --font-sys: "M PLUS Rounded 1c", "Trebuchet MS", sans-serif;
 
-  --color-void: #020617;
-  --color-abyss: #04102e;
-  --color-navy: #071c4d;
-  --color-ocean: #0f4c9c;
-  --color-azure: #2f8fe6;
-  --color-cyan: #6fdcff;
-  --color-ice: #bfefff;
-  --color-snow: #f2fbff;
-  --color-haze: #9cc4e8;
+  --color-void: #000000;
+  --color-abyss: #141416;
+  --color-navy: #26272b;
+  --color-ocean: #55565a;
+  --color-azure: #8e8e88;
+  /* Accent of the console's title text. */
+  --color-cyan: #ffe63c;
+  --color-ice: #ecece6;
+  --color-snow: #ffffff;
+  --color-haze: #bcbcb4;
 }
 
 :root {
-  --hairline: rgba(150, 225, 255, 0.34);
-  --panel-a: rgba(16, 66, 150, 0.5);
-  --panel-b: rgba(4, 20, 66, 0.66);
-  --glow: 0 0 14px rgba(111, 220, 255, 0.55);
-  --cut: 14px;
+  --hairline: rgba(255, 255, 255, 0.2);
+  --panel: rgba(16, 16, 20, 0.56);
+  --outline: 0 2px 0 rgba(0, 0, 0, 0.75), 0 0 6px rgba(0, 0, 0, 0.55);
+  --glow: 0 0 16px rgba(255, 255, 255, 0.6);
 }
 
 @layer base {
@@ -65,51 +65,35 @@
 @layer components {
   /* ---------- Console chrome ---------- */
 
+  /* White type with a hard black edge, readable on any part of the grey. */
   .t-title {
     font-family: var(--font-title);
-    letter-spacing: 0.04em;
+    font-weight: 700;
     color: var(--color-snow);
-    text-shadow: 0 0 18px rgba(111, 220, 255, 0.55), 0 1px 0 rgba(4, 16, 46, 0.8);
+    -webkit-text-stroke: 2.5px #000;
+    paint-order: stroke fill;
+  }
+
+  .t-yellow {
+    font-family: var(--font-title);
+    font-weight: 700;
+    color: var(--color-cyan);
+    -webkit-text-stroke: 2.5px #000;
+    paint-order: stroke fill;
   }
 
   .t-sys {
     font-family: var(--font-sys);
-    letter-spacing: 0.08em;
+    font-weight: 500;
+    letter-spacing: 0.02em;
   }
 
-  /* Translucent system window: hairline frame with bright brackets on two corners. */
   .panel {
     position: relative;
     border: 1px solid var(--hairline);
-    border-radius: 2px;
-    background:
-      linear-gradient(180deg, rgba(190, 235, 255, 0.1), rgba(190, 235, 255, 0) 56px),
-      linear-gradient(160deg, var(--panel-a), var(--panel-b));
-    box-shadow: inset 0 0 28px rgba(60, 170, 255, 0.1), 0 10px 34px rgba(0, 6, 30, 0.34);
-    backdrop-filter: blur(5px);
-  }
-
-  .panel::before,
-  .panel::after {
-    content: "";
-    position: absolute;
-    width: var(--cut);
-    height: var(--cut);
-    pointer-events: none;
-  }
-
-  .panel::before {
-    top: -1px;
-    left: -1px;
-    border-top: 2px solid var(--color-cyan);
-    border-left: 2px solid var(--color-cyan);
-  }
-
-  .panel::after {
-    right: -1px;
-    bottom: -1px;
-    border-right: 2px solid var(--color-cyan);
-    border-bottom: 2px solid var(--color-cyan);
+    border-radius: 6px;
+    background: var(--panel);
+    backdrop-filter: blur(4px);
   }
 
   .btn {
@@ -120,17 +104,18 @@
     min-height: 44px;
     padding: 0 1.1em;
     border: 1px solid var(--hairline);
-    background: linear-gradient(180deg, rgba(40, 120, 220, 0.5), rgba(8, 40, 110, 0.6));
+    border-radius: 6px;
+    background: rgba(16, 16, 20, 0.56);
     font-family: var(--font-sys);
-    letter-spacing: 0.1em;
+    font-weight: 700;
     font-size: 14px;
-    color: var(--color-ice);
+    color: var(--color-snow);
     transition: background 0.16s, color 0.16s, box-shadow 0.16s, transform 0.16s;
   }
 
   .btn:hover {
-    background: linear-gradient(180deg, rgba(140, 225, 255, 0.95), rgba(50, 150, 240, 0.95));
-    color: var(--color-abyss);
+    background: var(--color-snow);
+    color: #000;
     box-shadow: var(--glow);
   }
 
@@ -140,8 +125,30 @@
 
   .btn[data-on="true"] {
     border-color: var(--color-cyan);
+    color: var(--color-cyan);
+  }
+
+  .btn[data-on="true"]:hover {
+    color: #000;
+  }
+
+  /* One entry of the button legend along the bottom of the screen. */
+  .legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    min-height: 44px;
+    font-family: var(--font-title);
+    font-weight: 700;
     color: var(--color-snow);
-    box-shadow: inset 0 0 12px rgba(111, 220, 255, 0.4);
+    -webkit-text-stroke: 2.5px #000;
+    paint-order: stroke fill;
+    transition: transform 0.14s, filter 0.14s;
+  }
+
+  .legend:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
   }
 
   .keycap {
@@ -151,7 +158,8 @@
     height: 22px;
     padding: 0 6px;
     border: 1px solid var(--hairline);
-    background: rgba(10, 44, 110, 0.6);
+    background: rgba(16, 16, 20, 0.6);
+    border-radius: 4px;
     font-family: var(--font-sys);
     font-size: 12px;
     color: var(--color-snow);
@@ -164,8 +172,8 @@
     z-index: 60;
     pointer-events: none;
     background:
-      repeating-linear-gradient(0deg, rgba(0, 8, 30, 0.08) 0 1px, transparent 1px 3px),
-      radial-gradient(ellipse at center, transparent 58%, rgba(0, 4, 20, 0.5) 100%);
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 3px),
+      radial-gradient(ellipse at center, transparent 58%, rgba(0, 0, 0, 0.32) 100%);
   }
 
   .blink {
@@ -187,15 +195,15 @@
     0% { clip-path: inset(0 0 72% 0); transform: translateX(-7px); opacity: 0.7; }
     12% { clip-path: inset(46% 0 22% 0); transform: translateX(6px); }
     24% { clip-path: inset(12% 0 60% 0); transform: translateX(-3px); }
-    36% { clip-path: inset(0); transform: translateX(3px); text-shadow: -3px 0 #6fdcff, 3px 0 #ff4fd8; }
+    36% { clip-path: inset(0); transform: translateX(3px); text-shadow: -3px 0 #8c9cff, 3px 0 #ff6a6a; }
     52% { clip-path: inset(62% 0 8% 0); transform: translateX(-4px); }
-    66% { clip-path: inset(0); transform: none; text-shadow: -1px 0 #6fdcff, 1px 0 #ff4fd8; }
+    66% { clip-path: inset(0); transform: none; text-shadow: -1px 0 #8c9cff, 1px 0 #ff6a6a; }
     100% { clip-path: none; transform: none; opacity: 1; }
   }
 
   .scroll-area {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-azure) rgba(10, 40, 100, 0.4);
+    scrollbar-color: var(--color-ice) rgba(0, 0, 0, 0.3);
   }
 
   .only-touch {

@@ -39,10 +39,9 @@ export function Cursor() {
         height="30"
         viewBox="0 0 30 30"
         className="transition-transform duration-150"
-        style={{ transform: hot ? "scale(1.22)" : "none", transformOrigin: "2px 2px", filter: "drop-shadow(0 0 5px rgba(111,220,255,.9))" }}
+        style={{ transform: hot ? "scale(1.22)" : "none", transformOrigin: "2px 2px", filter: "drop-shadow(0 1px 2px rgba(0,0,0,.7))" }}
       >
-        <path d="M2 2 L24 11 L14.5 14.5 L11 24 Z" fill={hot ? "#f2fbff" : "#6fdcff"} stroke="#04102e" strokeWidth="1.6" strokeLinejoin="round" />
-        <path d="M6 6 L17 11 L11.5 12.5 L10 17 Z" fill={hot ? "#6fdcff" : "#e8f7ff"} opacity=".75" />
+        <path d="M2 2 L24 11 L14.5 14.5 L11 24 Z" fill={hot ? "#ffe63c" : "#ffffff"} stroke="#000" strokeWidth="1.6" strokeLinejoin="round" />
       </svg>
     </div>
   );

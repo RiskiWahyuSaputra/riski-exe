@@ -8,7 +8,7 @@ export function Notices() {
   const notices = useSystem((s) => s.notices);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-[92px] z-40 flex flex-col items-center gap-2 px-4 sm:top-6" role="status">
+    <div className="pointer-events-none fixed inset-x-0 top-[104px] z-40 flex flex-col items-center gap-2 px-4 sm:top-6" role="status">
       <AnimatePresence>
         {notices.map((n) => (
           <motion.p

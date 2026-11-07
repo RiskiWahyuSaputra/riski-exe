@@ -5,8 +5,8 @@ import github from "@/data/github.json";
 import { PROFILE } from "@/data/profile";
 import { Label, Panel } from "./shared";
 
-/** One hue from dark to light, read against the navy panel. */
-const LEVELS = ["rgba(150,200,255,.09)", "#1a5cb0", "#2f8fe6", "#6fdcff", "#eafaff"];
+/** One hue from dark to light, read against the dark panel. */
+const LEVELS = ["rgba(255,255,255,.1)", "#7a6a10", "#b89c14", "#ffe63c", "#fffbe0"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 type Day = { date: string; count: number; level: number };
@@ -115,7 +115,7 @@ export function Stats() {
             {github.languages.map((lang) => (
               <li key={lang.name} className="t-sys grid grid-cols-[92px_1fr_52px] items-center gap-2 text-[13px]">
                 <span className="truncate text-ice">{lang.name}</span>
-                <span className="block h-3 bg-[rgba(150,200,255,.09)]">
+                <span className="block h-3 bg-[rgba(255,255,255,.1)]">
                   <span className="block h-full rounded-r-[3px] bg-cyan" style={{ width: `${(lang.share / top) * 100}%` }} />
                 </span>
                 <span className="text-right text-snow">{lang.share}%</span>
