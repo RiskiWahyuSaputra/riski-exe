@@ -166,6 +166,10 @@ function Laptop({ active }: { active: Active }) {
           <boxGeometry args={[1.62, 1.04, 0.06]} />
           <Flat color="#c4d8ee" metal={0.65} rough={0.3} />
         </Part>
+        <Part position={[0, 0.51, -0.055]} rotation={[0, 0, Math.PI / 4]}>
+          <boxGeometry args={[0.24, 0.24, 0.01]} />
+          <Flat color="#2f8fe6" glow="#2f8fe6" power={0.8} />
+        </Part>
         <mesh position={[0, 0.51, 0.013]}>
           <planeGeometry args={[1.48, 0.92]} />
           <meshBasicMaterial map={screen} toneMapped={false} />
@@ -292,17 +296,17 @@ function Trophy({ active }: { active: Active }) {
     <group position={[0, -0.05, 0]} scale={1.08}>
       <Part>
         <latheGeometry args={[CUP_PROFILE, 9]} />
-        <Flat color="#ffc93c" metal={0.85} rough={0.26} glow="#7a4a00" power={0.5} />
+        <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
       </Part>
       {[-1, 1].map((side) => (
         <Part key={side} position={[side * 0.44, 0.42, 0]} rotation={[0, side > 0 ? 0 : Math.PI, -Math.PI / 2 + 0.1]}>
           <torusGeometry args={[0.2, 0.045, 5, 8, Math.PI]} />
-          <Flat color="#ffc93c" metal={0.85} rough={0.26} glow="#7a4a00" power={0.5} />
+          <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
         </Part>
       ))}
       <Part position={[0, -0.44, 0]}>
         <cylinderGeometry args={[0.09, 0.14, 0.32, 6]} />
-        <Flat color="#ffc93c" metal={0.85} rough={0.26} />
+        <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
       </Part>
       <Part position={[0, -0.64, 0]}>
         <boxGeometry args={[0.66, 0.14, 0.5]} />

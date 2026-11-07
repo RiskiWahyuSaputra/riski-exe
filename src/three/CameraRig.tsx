@@ -12,7 +12,9 @@ gsap.ticker.lagSmoothing(0);
 
 const damp = THREE.MathUtils.damp;
 const IDLE_HEIGHT = 0.35;
-const CLOSE_UP = 4.6;
+const CLOSE_UP = 7;
+/** Keeps the icon above the save bar during the close-up. */
+const CLOSE_UP_DROP = -0.62;
 
 /**
  * The camera is a mix of two poses: the wide browser view and a close-up of the
@@ -77,10 +79,12 @@ export function CameraRig({ children }: { children: React.ReactNode }) {
     r.py = damp(r.py, state.pointer.y * follow, 2.5, dt);
 
     eye.set(r.px * 0.55, IDLE_HEIGHT + r.py * 0.34 + r.intro * 7, stage.dist + r.intro * 30);
-    near.set(fx.focus.x, fx.focus.y + 0.06, fx.focus.z + CLOSE_UP);
+    near.set(fx.focus.x, fx.focus.y + 0.2, fx.focus.z + CLOSE_UP);
     state.camera.position.lerpVectors(eye, near, r.zoom);
 
-    look.copy(fx.focus).multiplyScalar(r.zoom);
+    look.copy(fx.focus);
+    look.y += CLOSE_UP_DROP;
+    look.multiplyScalar(r.zoom);
     state.camera.lookAt(look);
 
     origin.set(stage.ox, stage.oy, 0);

@@ -182,8 +182,8 @@ function Towers({ count }: { count: number }) {
     const m = new THREE.Object3D();
     for (let i = 0; i < count; i++) {
       const side = i % 2 === 0 ? -1 : 1;
-      const x = side * (5 + rand() * 30);
-      const z = -6 - rand() * 40;
+      const x = side * (6 + rand() * 32);
+      const z = -13 - rand() * 36;
       const h = 8 + rand() * 26;
       const r = 0.6 + rand() * 1.9;
       m.position.set(x, -9 + h * 0.5 - rand() * 5, z);
@@ -194,7 +194,7 @@ function Towers({ count }: { count: number }) {
       phases[i] = rand();
     }
     geo.setAttribute("aPhase", new THREE.InstancedBufferAttribute(phases, 1));
-    return { geometry: geo, material: glass("#5cc4ff", 1.25, 1), matrices: list };
+    return { geometry: geo, material: glass("#4fb0f0", 0.62, 1), matrices: list };
   }, [count]);
 
   const setup = (mesh: THREE.InstancedMesh | null) => {
@@ -230,13 +230,13 @@ function Shards({ count }: { count: number }) {
     const rand = seeded(7);
     return Array.from({ length: count }, (_, i) => ({
       geometry: SHARD_KINDS[i % SHARD_KINDS.length],
-      position: [(rand() - 0.5) * 28, (rand() - 0.5) * 15, -3 - rand() * 16] as const,
-      scale: 0.3 + rand() * 1.05,
+      position: [(rand() < 0.5 ? -1 : 1) * (7 + rand() * 11), (rand() - 0.5) * 14, -5 - rand() * 15] as const,
+      scale: 0.26 + rand() * 0.7,
       speed: 0.05 + rand() * 0.16,
       phase: rand() * 6.28,
     }));
   }, [count]);
-  const fill = useMemo(() => glass("#7ad6ff", 0.75, 0), []);
+  const fill = useMemo(() => glass("#7ad6ff", 0.5, 0), []);
   const wire = useMemo(
     () => new THREE.MeshBasicMaterial({ color: "#6fc8ff", wireframe: true, transparent: true, opacity: 0.11 }),
     [],

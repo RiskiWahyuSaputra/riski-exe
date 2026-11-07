@@ -40,10 +40,10 @@ function Slot({ save, ring, stage }: { save: SaveSlot; ring: React.RefObject<num
     let targetSize = 0;
 
     if (exists && browsing) {
-      targetSize = fx.reveal > 0.35 + save.index * 0.09 ? (picked ? 1.36 : 0.94) : 0;
+      targetSize = fx.reveal > 0.35 + save.index * 0.09 ? (picked ? 1 : 0.7) : 0;
       point.y += picked ? 0.2 : Math.sin(t * 1.1 + save.index) * 0.05;
     } else if (open && (phase === "opening" || phase === "loading")) {
-      targetSize = 1.36;
+      targetSize = 1;
     } else if (open) {
       point.set(stage.hero[0], stage.hero[1], 0);
       targetSize = stage.heroScale;
@@ -98,14 +98,13 @@ function Slot({ save, ring, stage }: { save: SaveSlot; ring: React.RefObject<num
 
   return (
     <group ref={root} scale={0.0001}>
-      <sprite ref={halo} renderOrder={-1}>
+      <sprite ref={halo} position={[0, 0, -1.1]}>
         <spriteMaterial
           map={haloTexture}
           color="#59c8ff"
           transparent
           blending={THREE.AdditiveBlending}
           depthWrite={false}
-          depthTest={false}
         />
       </sprite>
       <mesh ref={marker} position={[0, -1.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
