@@ -31,7 +31,7 @@ export function Contact() {
   };
 
   return (
-    <div className="mx-auto grid max-w-[1000px] gap-4 md:grid-cols-[1.15fr_1fr]">
+    <div className="mx-auto grid max-w-[1000px] grid-cols-[minmax(0,1fr)] gap-4 md:mt-[7vh] md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
       <Panel className="flex flex-col justify-center">
         <p className="t-sys text-[13px] text-cyan">NEW GAME + / PLAYER 2 WANTED</p>
         <h2 className="t-title mt-3 text-[24px] leading-snug sm:text-[34px]">Let&apos;s Work Together</h2>

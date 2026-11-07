@@ -2,7 +2,7 @@
 
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useSystem, type Phase } from "@/lib/store";
 import { fx, useStage } from "./rig";
@@ -16,6 +16,12 @@ const CLOSE_UP = 7;
 /** Keeps the icon above the save bar during the close-up. */
 const CLOSE_UP_DROP = -0.62;
 
+// Scratch vectors, reused every frame.
+const origin = new THREE.Vector3();
+const eye = new THREE.Vector3();
+const near = new THREE.Vector3();
+const look = new THREE.Vector3();
+
 /**
  * The camera is a mix of two poses: the wide browser view and a close-up of the
  * open save. GSAP only animates the mix, so the dive stays locked onto the icon
@@ -24,10 +30,6 @@ const CLOSE_UP_DROP = -0.62;
 export function CameraRig({ children }: { children: React.ReactNode }) {
   const stage = useStage();
   const rig = useRef({ zoom: 0, intro: 1, px: 0, py: 0 });
-  const origin = useMemo(() => new THREE.Vector3(), []);
-  const eye = useMemo(() => new THREE.Vector3(), []);
-  const near = useMemo(() => new THREE.Vector3(), []);
-  const look = useMemo(() => new THREE.Vector3(), []);
 
   useEffect(() => {
     const r = rig.current;
@@ -63,6 +65,9 @@ export function CameraRig({ children }: { children: React.ReactNode }) {
           break;
       }
     };
+
+    // The 3D chunk can arrive after the boot has already been skipped.
+    if (useSystem.getState().phase !== "boot") enter("browser", "boot");
 
     return useSystem.subscribe((state, prev) => {
       if (state.phase !== prev.phase) enter(state.phase, prev.phase);

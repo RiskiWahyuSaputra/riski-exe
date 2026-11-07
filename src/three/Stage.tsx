@@ -49,7 +49,7 @@ export default function Stage() {
   return (
     <Guard>
       <Canvas
-        className="!fixed inset-0"
+        className="!fixed inset-0 touch-none"
         flat
         dpr={[1, maxDpr]}
         camera={{ fov: FOV, near: 0.1, far: 140, position: [0, 7, 40] }}

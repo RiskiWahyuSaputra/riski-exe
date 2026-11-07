@@ -48,7 +48,7 @@ export function useControls() {
       const dy = e.changedTouches[0].clientY - startY;
       startX = null;
       const sys = useSystem.getState();
-      if (sys.phase === "browser" && Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (sys.phase === "browser" && !sys.grip && Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy) * 1.5) {
         sys.step(dx < 0 ? 1 : -1);
       }
     };

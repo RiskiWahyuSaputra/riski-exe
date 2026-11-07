@@ -26,6 +26,8 @@ type System = {
   /** True when WebGL is unavailable and the plain slot menu is shown instead. */
   no3d: boolean;
   hot: boolean;
+  /** Finger is holding the memory card, so a drag must not count as a swipe. */
+  grip: boolean;
   notices: Notice[];
 
   finishBoot: () => void;
@@ -70,7 +72,7 @@ export const useSystem = create<System>((set, get) => {
 
   const load = (index: number) => {
     const quick = calm() || get().no3d;
-    set({ phase: "opening", selected: index, openId: index });
+    set({ phase: "opening", selected: index, openId: index, hot: false });
     cue("confirm");
     schedule([
       [
@@ -104,6 +106,7 @@ export const useSystem = create<System>((set, get) => {
     secret: false,
     no3d: false,
     hot: false,
+    grip: false,
     notices: [],
 
     finishBoot() {

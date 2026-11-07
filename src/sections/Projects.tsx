@@ -35,7 +35,7 @@ export function Projects() {
   };
 
   return (
-    <div className="grid gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[320px_1fr]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[320px_minmax(0,1fr)]">
       <Panel className="flex min-h-0 flex-col lg:h-full">
         <div className="mb-3 flex flex-wrap gap-1.5" role="tablist" aria-label="Filter projects">
           {PROJECT_CATEGORIES.map((c) => (

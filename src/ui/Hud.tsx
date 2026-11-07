@@ -16,7 +16,7 @@ function Clock() {
   }, []);
 
   return (
-    <time className="t-sys block text-right text-[13px] leading-5 text-ice sm:text-[15px]" dateTime={now.toISOString()}>
+    <time className="t-sys block whitespace-nowrap text-right text-[11px] leading-5 tracking-normal text-ice sm:text-[15px] sm:tracking-[.08em]" dateTime={now.toISOString()}>
       {now.getFullYear()}/{pad(now.getMonth() + 1)}/{pad(now.getDate())} {DAYS[now.getDay()]}
       <span className="ml-2 text-snow sm:ml-3">
         {pad(now.getHours())}:{pad(now.getMinutes())}:{pad(now.getSeconds())}
@@ -33,10 +33,10 @@ export function SoundToggles() {
 
   return (
     <div className="flex gap-2">
-      <button type="button" className="btn !min-h-[34px] !px-2.5 !text-[12px]" data-on={sfx} aria-pressed={sfx} onClick={toggleSfx}>
+      <button type="button" className="btn !min-h-[34px] whitespace-nowrap !px-2 !text-[11px] sm:!px-2.5 sm:!text-[12px]" data-on={sfx} aria-pressed={sfx} onClick={toggleSfx}>
         SFX {sfx ? "ON" : "OFF"}
       </button>
-      <button type="button" className="btn !min-h-[34px] !px-2.5 !text-[12px]" data-on={ambient} aria-pressed={ambient} onClick={toggleAmbient}>
+      <button type="button" className="btn !min-h-[34px] whitespace-nowrap !px-2 !text-[11px] sm:!px-2.5 sm:!text-[12px]" data-on={ambient} aria-pressed={ambient} onClick={toggleAmbient}>
         BGM {ambient ? "ON" : "OFF"}
       </button>
     </div>
@@ -69,14 +69,14 @@ export function Hud() {
       <div className="flex min-w-0 items-center gap-3">
         <CardGlyph />
         <div className="min-w-0">
-          <h2 className="t-title text-[12px] sm:text-[17px]">MEMORY CARD 1</h2>
-          <p className="t-sys mt-1 text-[12px] text-cyan sm:text-[14px]">
+          <h2 className="t-title whitespace-nowrap text-[11px] sm:text-[17px]">MEMORY CARD 1</h2>
+          <p className="t-sys mt-1 whitespace-nowrap text-[12px] text-cyan sm:text-[14px]">
             <span className="text-snow">{found}</span> SAVE DATA FOUND
           </p>
-          <p className="t-sys mt-1 flex items-center gap-1.5 text-[11px] text-haze sm:text-[12px]">
+          <p className="t-sys mt-1 flex items-center gap-1.5 whitespace-nowrap text-[10px] text-haze sm:text-[12px]">
             <span className="flex gap-[2px]" aria-hidden>
               {Array.from({ length: found }, (_, i) => (
-                <i key={i} className={`block h-2 w-2 ${i > 5 ? "bg-[#ff4fd8]" : "bg-cyan"}`} />
+                <i key={i} className={`block h-1.5 w-1.5 sm:h-2 sm:w-2 ${i > 5 ? "bg-[#ff4fd8]" : "bg-cyan"}`} />
               ))}
             </span>
             {found}/6 DATA AVAILABLE

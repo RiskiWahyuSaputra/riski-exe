@@ -74,6 +74,8 @@ export function MemoryCard() {
       const d = drag.current;
       if (!d.active) return;
       d.active = false;
+      // Released after the touchend that reads this flag.
+      setTimeout(() => useSystem.setState({ grip: false }));
       if (d.moved > 6) return;
 
       motion.current.velocity += 9;
@@ -99,6 +101,7 @@ export function MemoryCard() {
     if (useSystem.getState().phase !== "browser") return;
     e.stopPropagation();
     drag.current = { active: true, moved: 0, x: e.clientX, y: e.clientY };
+    useSystem.setState({ grip: true });
   };
 
   useFrame((state, dt) => {

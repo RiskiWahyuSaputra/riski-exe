@@ -46,7 +46,7 @@ export function useStage(): Stage {
 
     const rx = portrait ? 2.75 : 3.6;
     const rz = 3;
-    const ry = portrait ? 1.95 : 2.05;
+    const ry = portrait ? 2.4 : 2.05;
 
     const tan = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
     const distForW = (rx + 1) / (tan * aspect * availW);

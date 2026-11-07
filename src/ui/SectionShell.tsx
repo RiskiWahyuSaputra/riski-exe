@@ -53,7 +53,7 @@ export function SectionShell() {
       exit={{ opacity: 0, scale: 1.03 }}
       transition={{ duration: 0.3 }}
     >
-      <header className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--hairline)] bg-gradient-to-b from-[rgba(2,10,40,.62)] to-transparent px-4 pb-3 pt-[max(14px,env(safe-area-inset-top))] sm:px-8 sm:pb-4 sm:pt-6">
+      <header className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--hairline)] bg-gradient-to-b from-[rgba(2,10,40,.28)] to-transparent px-4 pb-3 pt-[max(14px,env(safe-area-inset-top))] sm:px-8 sm:pb-4 sm:pt-6">
         <div className="min-w-0 pr-[92px] sm:pr-[170px]">
           <p className="t-sys text-[12px] text-cyan sm:text-[14px]">
             MEMORY CARD 1 / SAVE SLOT {save.slot}

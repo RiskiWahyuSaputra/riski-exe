@@ -5,7 +5,7 @@ import { Chip, Label, Panel } from "./shared";
 
 export function Profile() {
   return (
-    <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
       <div className="flex flex-col gap-4">
         <Panel>
           <div className="relative mx-auto aspect-square w-40 border border-[var(--hairline)] lg:w-full">
@@ -37,7 +37,7 @@ export function Profile() {
           <p className="mt-3 text-[15px] leading-relaxed text-ice/90">{PROFILE.background}</p>
         </Panel>
 
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-2">
           <Panel>
             <Label>DEVELOPER INTERESTS</Label>
             <ul className="space-y-3">

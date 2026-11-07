@@ -197,7 +197,9 @@ function Towers({ count }: { count: number }) {
     return { geometry: geo, material: glass("#4fb0f0", 0.62, 1), matrices: list };
   }, [count]);
 
+  const instances = useRef<THREE.InstancedMesh>(null);
   const setup = (mesh: THREE.InstancedMesh | null) => {
+    instances.current = mesh;
     if (!mesh) return;
     matrices.forEach((matrix, i) => mesh.setMatrixAt(i, matrix));
     mesh.instanceMatrix.needsUpdate = true;
@@ -205,7 +207,8 @@ function Towers({ count }: { count: number }) {
 
   const group = useRef<THREE.Group>(null);
   useFrame((state, dt) => {
-    material.uniforms.uTime.value = state.clock.elapsedTime;
+    const shader = instances.current?.material as THREE.ShaderMaterial | undefined;
+    if (shader) shader.uniforms.uTime.value = state.clock.elapsedTime;
     if (group.current) group.current.rotation.y += dt * (0.004 + fx.warp * 0.18);
   });
 

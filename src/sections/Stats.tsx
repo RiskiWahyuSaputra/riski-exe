@@ -98,7 +98,7 @@ export function Stats() {
   const top = github.languages[0].share;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Tile label="Contributions" value={github.totalContributions.toLocaleString("en-US")} note="last 12 months" />
         <Tile label="Public commits" value={github.commits.toLocaleString("en-US")} note="default branches" />
@@ -108,7 +108,7 @@ export function Stats() {
 
       <Calendar />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <Panel>
           <Label aside="share of code in public repos">PROGRAMMING LANGUAGES</Label>
           <ul className="space-y-2">
