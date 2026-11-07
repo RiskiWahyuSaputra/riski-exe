@@ -45,17 +45,17 @@ const skyFragment = /* glsl */ `
     float t = uTime * 0.03;
 
     vec3 deep = vec3(0.002, 0.008, 0.04);
-    vec3 col = mix(deep, uTint * 0.5, smoothstep(-0.65, 0.6, p.y + 0.18));
+    vec3 col = mix(deep, uTint * 0.2, smoothstep(-0.6, 0.62, p.y + 0.1));
 
     // Slow smoke banks of light.
     float smoke = fbm(p * 1.7 + vec2(t, -t * 0.6) + fbm(p * 2.4 - t) * 0.9);
-    col += uTint * pow(smoke, 2.4) * 1.5;
+    col += uTint * pow(smoke, 2.6) * 0.62;
 
     // A soft source of light high behind the scene, with faint rays leaving it.
     vec2 q = p - vec2(-0.06, 0.34);
     float glow = exp(-dot(q, q) * 3.4);
-    float rays = 0.55 + 0.45 * sin(atan(q.y, q.x) * 9.0 + smoke * 5.0 + uTime * 0.05);
-    col += mix(uTint, vec3(0.5, 0.85, 1.0), 0.45) * glow * (0.34 + 0.16 * rays);
+    float rays = sin(atan(q.y, q.x) * 7.0 + smoke * 6.0 + uTime * 0.05) * smoothstep(0.05, 0.5, length(q));
+    col += mix(uTint, vec3(0.35, 0.7, 1.0), 0.35) * glow * (0.17 + 0.035 * rays);
 
     col += vec3(0.2, 0.55, 1.0) * uWarp * 0.26 * exp(-dot(p, p) * 5.0);
 
@@ -194,7 +194,7 @@ function Towers({ count }: { count: number }) {
       phases[i] = rand();
     }
     geo.setAttribute("aPhase", new THREE.InstancedBufferAttribute(phases, 1));
-    return { geometry: geo, material: glass("#5cc4ff", 0.8, 1), matrices: list };
+    return { geometry: geo, material: glass("#5cc4ff", 1.25, 1), matrices: list };
   }, [count]);
 
   const setup = (mesh: THREE.InstancedMesh | null) => {
