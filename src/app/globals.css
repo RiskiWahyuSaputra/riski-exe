@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Side-by-side layout: wide screens, plus phones held sideways. */
+@custom-variant side (@media (min-width: 900px), (min-width: 640px) and (max-height: 560px) and (orientation: landscape));
+@custom-variant short (@media (max-height: 560px));
+
 @theme {
   --font-title: "Michroma", "Eurostile", sans-serif;
   --font-sans: "M PLUS Rounded 1c", "Trebuchet MS", sans-serif;

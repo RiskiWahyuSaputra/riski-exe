@@ -53,15 +53,15 @@ export function SectionShell() {
       exit={{ opacity: 0, scale: 1.03 }}
       transition={{ duration: 0.3 }}
     >
-      <header className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--hairline)] bg-gradient-to-b from-[rgba(2,10,40,.28)] to-transparent px-4 pb-3 pt-[max(14px,env(safe-area-inset-top))] sm:px-8 sm:pb-4 sm:pt-6">
+      <header className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--hairline)] bg-gradient-to-b from-[rgba(2,10,40,.28)] to-transparent px-4 pb-3 pt-[max(14px,env(safe-area-inset-top))] sm:px-8 sm:pb-4 sm:pt-6 short:pb-1.5 short:pt-2">
         <div className="min-w-0 pr-[92px] sm:pr-[170px]">
           <p className="t-sys text-[12px] text-cyan sm:text-[14px]">
             MEMORY CARD 1 / SAVE SLOT {save.slot}
           </p>
-          <h1 key={save.file} ref={heading} tabIndex={-1} className="t-title glitch mt-1 truncate text-[19px] outline-none sm:text-[32px]">
+          <h1 key={save.file} ref={heading} tabIndex={-1} className="t-title glitch mt-1 truncate text-[19px] outline-none sm:text-[32px] short:mt-0 short:text-[18px]">
             {save.file}
           </h1>
-          <p className="mt-0.5 text-[14px] font-medium text-ice sm:text-[16px]">{save.title}</p>
+          <p className="mt-0.5 text-[14px] font-medium text-ice sm:text-[16px] short:hidden">{save.title}</p>
         </div>
         <div className="absolute right-[190px] top-7 hidden lg:block">
           <SoundToggles />

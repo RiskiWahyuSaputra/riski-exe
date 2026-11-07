@@ -14,13 +14,13 @@ export function Fallback() {
   return (
     <motion.nav
       aria-label="Save data"
-      className="fixed inset-x-3 top-[112px] z-20 min-[900px]:left-6 min-[900px]:right-[350px] min-[900px]:top-[130px] min-[1200px]:right-[420px]"
+      className="fixed inset-x-3 top-[112px] z-20 side:left-6 side:right-[350px] side:top-[130px] min-[1200px]:right-[420px] short:top-[92px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <p className="t-sys mb-3 text-[12px] text-haze">3D RENDERER UNAVAILABLE ON THIS DEVICE. SLOT MENU LOADED.</p>
-      <ul className="grid grid-cols-2 gap-2 min-[900px]:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-2 side:grid-cols-3">
         {ALL_SAVES.slice(0, slotCount(secret)).map((save) => (
           <li key={save.hash}>
             <button

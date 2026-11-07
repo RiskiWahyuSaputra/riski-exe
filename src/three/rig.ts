@@ -60,9 +60,10 @@ export function useStage(): Stage {
 
     // Sized in pixels, so the icon fits the section header on any screen.
     const unitsPerPx = worldH / height;
-    const heroPx = width < 640 ? 62 : 118;
-    const heroRight = width < 640 ? 52 : 92;
-    const heroTop = width < 640 ? 54 : 72;
+    const compact = width < 640 || height < 560;
+    const heroPx = compact ? 62 : 118;
+    const heroRight = compact ? 52 : 92;
+    const heroTop = compact ? (height < 560 ? 36 : 54) : 72;
     const hero: [number, number] = [
       worldW / 2 - heroRight * unitsPerPx - ox,
       worldH / 2 - heroTop * unitsPerPx - oy,
