@@ -4,7 +4,8 @@ import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useSystem } from "@/lib/store";
-import { boardTexture, labelTexture } from "./textures";
+import { useStage } from "./rig";
+import { labelTexture } from "./textures";
 
 const damp = THREE.MathUtils.damp;
 const W = 1.72;
@@ -24,7 +25,7 @@ function shellShape() {
   return s;
 }
 
-/** The floating card in the center of the orbit. Drag spins it, clicks do something else. */
+/** The card in the corner of the browser. Drag spins it, clicks do something else. */
 export function MemoryCard() {
   const root = useRef<THREE.Group>(null);
   const spinner = useRef<THREE.Group>(null);
@@ -44,12 +45,12 @@ export function MemoryCard() {
       }).translate(0, 0, -D / 2),
     [],
   );
-  const board = useMemo(() => boardTexture(), []);
+  const stage = useStage();
   const [label, setLabel] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
     let alive = true;
-    Promise.all([document.fonts.load("34px Michroma"), document.fonts.load("26px 'Share Tech Mono'")]).then(() => {
+    Promise.all([document.fonts.load('700 34px "M PLUS Rounded 1c"')]).then(() => {
       if (alive) setLabel(labelTexture());
     });
     return () => {
@@ -113,9 +114,9 @@ export function MemoryCard() {
     const t = state.clock.elapsedTime;
 
     m.size = damp(m.size, phase === "browser" ? 1 : 0, phase === "browser" ? 4 : 7, dt);
-    g.scale.setScalar(Math.max(m.size, 0.0001));
+    g.scale.setScalar(Math.max((m.size * stage.cornerPx * stage.unit) / H, 0.0001));
     g.visible = m.size > 0.002;
-    g.position.y = 0.06 + Math.sin(t * 0.8) * 0.07;
+    g.position.set(stage.corner[0], stage.corner[1], 0);
 
     if (!drag.current.active) {
       m.yaw += dt * m.velocity;
@@ -140,33 +141,17 @@ export function MemoryCard() {
   return (
     <group ref={root}>
       <group ref={spinner}>
-        <mesh
-          geometry={shell}
-          onPointerDown={press}
-          onPointerOver={hover(true)}
-          onPointerOut={hover(false)}
-          renderOrder={3}
-        >
-          <meshPhysicalMaterial
-            color="#2f8fe6"
-            transparent
-            opacity={0.5}
-            roughness={0.12}
-            metalness={0.1}
-            clearcoat={1}
-            clearcoatRoughness={0.15}
-            envMapIntensity={1.6}
-            depthWrite={false}
-          />
+        <mesh geometry={shell}>
+          <meshPhysicalMaterial color="#17181c" roughness={0.42} metalness={0.25} clearcoat={0.5} clearcoatRoughness={0.4} />
         </mesh>
 
-        <mesh renderOrder={1}>
-          <boxGeometry args={[W - 0.2, H - 0.26, 0.06]} />
-          <meshStandardMaterial map={board} roughness={0.5} metalness={0.3} emissiveMap={board} emissive="#3aa8ff" emissiveIntensity={0.28} />
+        {/* Larger than the card, so it stays easy to hit at this size. */}
+        <mesh visible={false} onPointerDown={press} onPointerOver={hover(true)} onPointerOut={hover(false)}>
+          <sphereGeometry args={[1.7, 8, 6]} />
         </mesh>
 
         {label && (
-          <mesh position={[0, 0.2, D / 2 + 0.04]} renderOrder={4}>
+          <mesh position={[0, 0.2, D / 2 + 0.04]}>
             <planeGeometry args={[1.42, 1.065]} />
             <meshStandardMaterial map={label} roughness={0.4} emissiveMap={label} emissive="#ffffff" emissiveIntensity={0.16} />
           </mesh>
@@ -174,22 +159,22 @@ export function MemoryCard() {
 
         {/* Grip ridges under the label. */}
         {[-0.56, -0.66, -0.76].map((y) => (
-          <mesh key={y} position={[0, y, D / 2 + 0.04]} renderOrder={4}>
+          <mesh key={y} position={[0, y, D / 2 + 0.04]}>
             <boxGeometry args={[1.42, 0.035, 0.02]} />
-            <meshStandardMaterial color="#9fd8ff" metalness={0.5} roughness={0.3} />
+            <meshStandardMaterial color="#3a3c44" metalness={0.5} roughness={0.4} />
           </mesh>
         ))}
 
         {pins.map((x) => (
-          <mesh key={x} position={[x, -H / 2 + 0.05, D / 2 + 0.012]} renderOrder={4}>
+          <mesh key={x} position={[x, -H / 2 + 0.05, D / 2 + 0.012]}>
             <boxGeometry args={[0.085, 0.16, 0.02]} />
             <meshStandardMaterial color="#f0c860" metalness={0.9} roughness={0.25} />
           </mesh>
         ))}
 
-        <mesh position={[-0.68, H / 2 - 0.13, D / 2 + 0.04]} renderOrder={4}>
+        <mesh position={[-0.68, H / 2 - 0.13, D / 2 + 0.04]}>
           <sphereGeometry args={[0.04, 8, 6]} />
-          <meshStandardMaterial ref={led} color="#6fdcff" emissive="#6fdcff" emissiveIntensity={2} />
+          <meshStandardMaterial ref={led} color="#ff5040" emissive="#ff3020" emissiveIntensity={2} />
         </mesh>
       </group>
     </group>

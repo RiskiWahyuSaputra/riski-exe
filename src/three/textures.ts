@@ -28,60 +28,17 @@ export function glowTexture() {
 /** Sticker on the front of the card. Drawn after fonts load, so the type is right. */
 export function labelTexture() {
   const [el, g] = canvas(512, 384);
-  const bg = g.createLinearGradient(0, 0, 512, 384);
-  bg.addColorStop(0, "#f4fbff");
-  bg.addColorStop(1, "#b8dcf5");
-  g.fillStyle = bg;
+  g.fillStyle = "#26282e";
   g.fillRect(0, 0, 512, 384);
-
-  g.fillStyle = "#0a3f94";
-  g.fillRect(0, 0, 512, 84);
-  g.fillStyle = "#f4fbff";
-  g.font = "34px Michroma";
+  g.fillStyle = "#f4f4f0";
   g.textBaseline = "middle";
-  g.fillText("MEMORY CARD", 30, 44);
-
-  g.fillStyle = "#0a2f70";
-  g.font = "64px Michroma";
-  g.fillText("RISKI", 28, 158);
-  g.fillStyle = "#1f8fe0";
-  g.fillText(".EXE", 28, 238);
-
-  g.fillStyle = "#0a2f70";
-  g.font = "26px 'Share Tech Mono'";
-  g.fillText("8 MB  /  6 SAVE DATA", 30, 318);
-  g.fillText("DEV-2026  SLOT 1", 30, 350);
-
-  // Save-block meter along the right edge.
-  for (let i = 0; i < 6; i++) {
-    g.fillStyle = "#1f8fe0";
-    g.fillRect(440, 110 + i * 40, 44, 28);
-  }
-  return toTexture(el);
-}
-
-/** Circuit board visible through the clear shell. */
-export function boardTexture() {
-  const [el, g] = canvas(512, 640);
-  g.fillStyle = "#06235c";
-  g.fillRect(0, 0, 512, 640);
-  g.strokeStyle = "#39b6ff";
-  g.lineWidth = 3;
-  g.globalAlpha = 0.75;
-  for (let i = 0; i < 26; i++) {
-    const x = 20 + i * 18;
-    g.beginPath();
-    g.moveTo(x, 640);
-    g.lineTo(x, 470 - (i % 5) * 18);
-    g.lineTo(x + ((i % 3) - 1) * 46, 400 - (i % 4) * 26);
-    g.lineTo(x + ((i % 3) - 1) * 46, 30 + (i % 6) * 22);
-    g.stroke();
-  }
-  g.globalAlpha = 1;
-  g.fillStyle = "#020a22";
-  g.fillRect(70, 90, 170, 170);
-  g.fillRect(290, 120, 130, 90);
-  g.fillRect(150, 320, 210, 90);
+  g.font = '700 92px "M PLUS Rounded 1c"';
+  g.fillText("RISKI", 34, 130);
+  g.fillStyle = "#ffe63c";
+  g.fillText(".EXE", 34, 240);
+  g.fillStyle = "#b0b0aa";
+  g.font = '500 32px "M PLUS Rounded 1c"';
+  g.fillText("MEMORY CARD 8MB", 34, 330);
   return toTexture(el);
 }
 

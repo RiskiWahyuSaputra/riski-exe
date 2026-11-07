@@ -6,9 +6,11 @@ import * as THREE from "three";
 import { ALL_SAVES } from "@/data/saves";
 import { useSystem } from "@/lib/store";
 import { fx } from "./rig";
+import { glowTexture } from "./textures";
 
 const damp = THREE.MathUtils.damp;
-const REST_TINT = "#0e4fb0";
+/** Neutral grey of the browser. An open save only nudges it toward its own tint. */
+const REST_TINT = "#8c8c88";
 
 /* ---------- Sky: a fullscreen shader behind everything ---------- */
 
@@ -25,6 +27,7 @@ const skyFragment = /* glsl */ `
   uniform float uAspect;
   uniform float uWarp;
   uniform vec3 uTint;
+  uniform float uWorld;
   varying vec2 vUv;
 
   float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -44,23 +47,22 @@ const skyFragment = /* glsl */ `
     vec2 p = vec2((vUv.x - 0.5) * uAspect, vUv.y - 0.5);
     float t = uTime * 0.03;
 
-    vec3 deep = vec3(0.002, 0.008, 0.04);
-    vec3 col = mix(deep, uTint * 0.2, smoothstep(-0.6, 0.62, p.y + 0.1));
-
-    // Slow smoke banks of light.
+    // Boot: near-black space with slow blue fog.
     float smoke = fbm(p * 1.7 + vec2(t, -t * 0.6) + fbm(p * 2.4 - t) * 0.9);
-    col += uTint * pow(smoke, 2.6) * 0.62;
+    vec3 fog = vec3(0.012, 0.05, 0.3);
+    vec3 boot = fog * smoothstep(-0.7, 0.5, p.y) * 0.55 + fog * pow(smoke, 2.6) * 1.6;
 
-    // A soft source of light high behind the scene, with faint rays leaving it.
-    vec2 q = p - vec2(-0.06, 0.34);
-    float glow = exp(-dot(q, q) * 3.4);
-    float rays = sin(atan(q.y, q.x) * 7.0 + smoke * 6.0 + uTime * 0.05) * smoothstep(0.05, 0.5, length(q));
-    col += mix(uTint, vec3(0.35, 0.7, 1.0), 0.35) * glow * (0.17 + 0.035 * rays);
+    // Browser: brushed grey lit from the top left, falling to dark olive at the bottom right.
+    vec2 uv = vUv;
+    float light = dot(uv - vec2(0.12, 0.92), vec2(0.72, -0.7));
+    vec3 grey = mix(vec3(0.56, 0.55, 0.53), vec3(0.27, 0.27, 0.255), smoothstep(0.0, 0.62, light));
+    grey = mix(grey, vec3(0.024, 0.03, 0.018), smoothstep(0.62, 1.12, light));
+    grey *= mix(0.62, 1.0, smoothstep(-0.02, 0.34, uv.x + uv.y * 0.55));
+    grey *= 0.97 + smoke * 0.06;
+    grey = mix(grey, grey * uTint * 2.6, 0.5);
+    grey += vec3(0.5) * uWarp * 0.3 * exp(-dot(p, p) * 5.0);
 
-    col += vec3(0.2, 0.55, 1.0) * uWarp * 0.26 * exp(-dot(p, p) * 5.0);
-
-    float vignette = smoothstep(1.25, 0.28, length(p * vec2(0.86, 1.2)));
-    col *= mix(0.3, 1.0, vignette);
+    vec3 col = mix(boot, grey, uWorld);
 
     col += (hash(vUv * 913.0 + uTime) - 0.5) * 0.006;
     gl_FragColor = vec4(col, 1.0);
@@ -75,6 +77,7 @@ function Sky() {
       uTime: { value: 0 },
       uAspect: { value: 1.6 },
       uWarp: { value: 0 },
+      uWorld: { value: 0 },
       uTint: { value: new THREE.Color(REST_TINT) },
     }),
     [],
@@ -87,6 +90,7 @@ function Sky() {
     u.uTime.value = state.clock.elapsedTime;
     u.uAspect.value = state.size.width / state.size.height;
     u.uWarp.value = fx.warp;
+    u.uWorld.value = fx.world;
     const { openId } = useSystem.getState();
     target.set(openId === null ? REST_TINT : ALL_SAVES[openId].tint);
     u.uTint.value.lerp(target, 1 - Math.exp(-2.4 * dt));
@@ -173,29 +177,29 @@ function seeded(seed: number) {
   };
 }
 
-function Towers({ count }: { count: number }) {
+/** A city of glass columns, only seen during boot. */
+function Towers({ side }: { side: number }) {
+  const count = side * side;
   const { geometry, material, matrices } = useMemo(() => {
     const rand = seeded(20);
-    const geo = new THREE.CylinderGeometry(1, 1, 1, 6, 1, false);
+    const geo = new THREE.BoxGeometry(1, 1, 1);
     const phases = new Float32Array(count);
     const list: THREE.Matrix4[] = [];
     const m = new THREE.Object3D();
+    const gap = 2.7;
     for (let i = 0; i < count; i++) {
-      const side = i % 2 === 0 ? -1 : 1;
-      const x = side * (6 + rand() * 32);
-      const z = -13 - rand() * 36;
-      const h = 8 + rand() * 26;
-      const r = 0.6 + rand() * 1.9;
-      m.position.set(x, -9 + h * 0.5 - rand() * 5, z);
-      m.scale.set(r, h, r);
-      m.rotation.set(0, rand() * Math.PI, 0);
+      const gx = (i % side) - (side - 1) / 2;
+      const gz = Math.floor(i / side) - (side - 1) / 2;
+      const h = 1.5 + Math.pow(rand(), 2.2) * 15;
+      m.position.set(gx * gap, -7 + h / 2, gz * gap - 8);
+      m.scale.set(1.75, h, 1.75);
       m.updateMatrix();
       list.push(m.matrix.clone());
       phases[i] = rand();
     }
     geo.setAttribute("aPhase", new THREE.InstancedBufferAttribute(phases, 1));
-    return { geometry: geo, material: glass("#4fb0f0", 0.62, 1), matrices: list };
-  }, [count]);
+    return { geometry: geo, material: glass("#3f86ff", 1.1, 0.45), matrices: list };
+  }, [count, side]);
 
   const instances = useRef<THREE.InstancedMesh>(null);
   const setup = (mesh: THREE.InstancedMesh | null) => {
@@ -205,71 +209,56 @@ function Towers({ count }: { count: number }) {
     mesh.instanceMatrix.needsUpdate = true;
   };
 
-  const group = useRef<THREE.Group>(null);
-  useFrame((state, dt) => {
-    const shader = instances.current?.material as THREE.ShaderMaterial | undefined;
-    if (shader) shader.uniforms.uTime.value = state.clock.elapsedTime;
-    if (group.current) group.current.rotation.y += dt * (0.004 + fx.warp * 0.18);
+  useFrame((state) => {
+    const mesh = instances.current;
+    if (!mesh) return;
+    mesh.visible = fx.world < 1;
+    (mesh.material as THREE.ShaderMaterial).uniforms.uTime.value = state.clock.elapsedTime;
   });
 
-  return (
-    <group ref={group} position={[0, 0, -18]}>
-      <group position={[0, 0, 18]}>
-        <instancedMesh ref={setup} args={[geometry, material, count]} frustumCulled={false} />
-      </group>
-    </group>
-  );
+  return <instancedMesh ref={setup} args={[geometry, material, count]} frustumCulled={false} />;
 }
 
-const SHARD_KINDS = [
-  new THREE.IcosahedronGeometry(1, 0),
-  new THREE.OctahedronGeometry(1, 0),
-  new THREE.TetrahedronGeometry(1, 0),
-  new THREE.DodecahedronGeometry(1, 0),
-];
-
-function Shards({ count }: { count: number }) {
+/** Points of light drifting between the columns. */
+function Orbs({ count }: { count: number }) {
+  const texture = useMemo(() => glowTexture(), []);
   const items = useMemo(() => {
     const rand = seeded(7);
-    return Array.from({ length: count }, (_, i) => ({
-      geometry: SHARD_KINDS[i % SHARD_KINDS.length],
-      position: [(rand() < 0.5 ? -1 : 1) * (7 + rand() * 11), (rand() - 0.5) * 14, -5 - rand() * 15] as const,
-      scale: 0.26 + rand() * 0.7,
-      speed: 0.05 + rand() * 0.16,
+    return Array.from({ length: count }, () => ({
+      x: (rand() - 0.5) * 30,
+      z: -8 + (rand() - 0.5) * 26,
+      y: rand() * 9 - 1,
+      speed: 0.12 + rand() * 0.26,
       phase: rand() * 6.28,
+      size: 0.7 + rand() * 1.5,
     }));
   }, [count]);
-  const fill = useMemo(() => glass("#7ad6ff", 0.5, 0), []);
-  const wire = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: "#6fc8ff", wireframe: true, transparent: true, opacity: 0.11 }),
-    [],
-  );
-  const refs = useRef<(THREE.Group | null)[]>([]);
+  const group = useRef<THREE.Group>(null);
 
-  useFrame((state, dt) => {
+  useFrame((state) => {
+    const g = group.current;
+    if (!g) return;
+    g.visible = fx.world < 1;
     const t = state.clock.elapsedTime;
-    items.forEach((item, i) => {
-      const g = refs.current[i];
-      if (!g) return;
-      g.rotation.x += dt * item.speed * (1 + fx.warp * 12);
-      g.rotation.y += dt * item.speed * 1.4 * (1 + fx.warp * 12);
-      g.position.y = item.position[1] + Math.sin(t * item.speed * 2 + item.phase) * 0.6;
+    g.children.forEach((child, i) => {
+      const o = items[i];
+      child.position.set(
+        o.x + Math.sin(t * o.speed + o.phase) * 5,
+        o.y + Math.sin(t * o.speed * 1.7 + o.phase) * 2,
+        o.z + Math.cos(t * o.speed + o.phase) * 5,
+      );
     });
   });
 
-  return items.map((item, i) => (
-    <group
-      key={i}
-      ref={(el) => {
-        refs.current[i] = el;
-      }}
-      position={[item.position[0], item.position[1], item.position[2]]}
-      scale={item.scale}
-    >
-      <mesh geometry={item.geometry} material={fill} />
-      <mesh geometry={item.geometry} material={wire} scale={1.01} />
+  return (
+    <group ref={group}>
+      {items.map((o, i) => (
+        <sprite key={i} scale={o.size}>
+          <spriteMaterial map={texture} color="#a8d4ff" transparent blending={THREE.AdditiveBlending} depthWrite={false} />
+        </sprite>
+      ))}
     </group>
-  ));
+  );
 }
 
 /* ---------- Dust: points that wrap through a box around the camera ---------- */
@@ -323,7 +312,10 @@ function Dust({ count }: { count: number }) {
     [],
   );
 
+  const points = useRef<THREE.Points>(null);
+
   useFrame((state, dt) => {
+    if (points.current) points.current.visible = fx.world < 1;
     const u = material.current?.uniforms;
     if (!u) return;
     u.uTime.value = state.clock.elapsedTime;
@@ -333,7 +325,7 @@ function Dust({ count }: { count: number }) {
   });
 
   return (
-    <points geometry={geometry} frustumCulled={false}>
+    <points ref={points} geometry={geometry} frustumCulled={false}>
       <shaderMaterial
         ref={material}
         vertexShader={dustVertex}
@@ -351,9 +343,9 @@ export function Atmosphere({ light }: { light: boolean }) {
   return (
     <>
       <Sky />
-      <Towers count={light ? 20 : 40} />
-      <Shards count={light ? 8 : 16} />
-      <Dust count={light ? 240 : 620} />
+      <Towers side={light ? 9 : 13} />
+      <Orbs count={light ? 10 : 20} />
+      <Dust count={light ? 160 : 360} />
     </>
   );
 }

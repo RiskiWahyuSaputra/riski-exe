@@ -8,7 +8,7 @@ import { Atmosphere } from "./Atmosphere";
 import { CameraRig } from "./CameraRig";
 import { MemoryCard } from "./MemoryCard";
 import { FOV } from "./rig";
-import { SaveRing } from "./SaveRing";
+import { SaveGrid } from "./SaveGrid";
 
 /** A GPU failure mid-session falls back to the slot menu rather than a blank page. */
 class Guard extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -56,20 +56,20 @@ export default function Stage() {
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
       >
         <PerformanceMonitor onDecline={() => setMaxDpr(1)} />
-        <ambientLight intensity={0.75} color="#b8dcff" />
-        <directionalLight position={[-4, 7, 8]} intensity={2.4} color="#ffffff" />
-        <directionalLight position={[6, -2, -6]} intensity={1.8} color="#4fc4ff" />
+        <ambientLight intensity={1} color="#ffffff" />
+        <directionalLight position={[-4, 7, 8]} intensity={2.1} color="#ffffff" />
+        <directionalLight position={[6, -2, -6]} intensity={0.9} color="#ffffff" />
         <Suspense fallback={null}>
           <Environment frames={1} resolution={64}>
-            <Lightformer form="rect" intensity={5} color="#d8f2ff" position={[0, 6, 4]} scale={[12, 4, 1]} />
-            <Lightformer form="rect" intensity={3} color="#2f8fe6" position={[-7, 0, 3]} rotation={[0, Math.PI / 2, 0]} scale={[8, 8, 1]} />
-            <Lightformer form="rect" intensity={2} color="#6fdcff" position={[7, -2, 2]} rotation={[0, -Math.PI / 2, 0]} scale={[8, 6, 1]} />
+            <Lightformer form="rect" intensity={5} color="#ffffff" position={[0, 6, 4]} scale={[12, 4, 1]} />
+            <Lightformer form="rect" intensity={2.4} color="#d8d8d4" position={[-7, 0, 3]} rotation={[0, Math.PI / 2, 0]} scale={[8, 8, 1]} />
+            <Lightformer form="rect" intensity={1.6} color="#c8c8c8" position={[7, -2, 2]} rotation={[0, -Math.PI / 2, 0]} scale={[8, 6, 1]} />
           </Environment>
         </Suspense>
         <Atmosphere light={light} />
         <CameraRig>
           <MemoryCard />
-          <SaveRing />
+          <SaveGrid />
         </CameraRig>
       </Canvas>
     </Guard>

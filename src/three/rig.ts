@@ -1,8 +1,10 @@
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { useMemo } from "react";
+import { gridCols } from "@/lib/grid";
 
 export const FOV = 35;
+const DIST = 14;
 
 /**
  * Values shared between GSAP timelines and the render loop.
@@ -13,24 +15,28 @@ export const fx = {
   warp: 0,
   /** Seconds since the browser appeared, for the staggered icon pop-in. */
   reveal: 0,
-  /** World position of the save being opened, written by the ring. */
+  /** 0 is the dark boot world, 1 the grey browser. */
+  world: 0,
+  /** World position and size of the save being opened, written by the grid. */
   focus: new THREE.Vector3(),
+  focusSize: 1,
 };
 
 export type Stage = {
   dist: number;
+  width: number;
+  height: number;
   worldW: number;
   worldH: number;
-  /** Where the ring sits, so it stays clear of the file panel. */
-  ox: number;
+  /** World units per CSS pixel on the z = 0 plane. */
+  unit: number;
+  /** Vertical offset of the grid, so it stays clear of the header and legend. */
   oy: number;
-  rx: number;
-  rz: number;
-  ry: number;
-  portrait: boolean;
-  /** Corner of the screen a save's icon flies to while its section is open. */
-  hero: [number, number];
-  heroScale: number;
+  regionW: number;
+  regionH: number;
+  /** Top-left corner spot shared by the memory card and an open save's icon. */
+  corner: [number, number];
+  cornerPx: number;
 };
 
 export function useStage(): Stage {
@@ -38,43 +44,46 @@ export function useStage(): Stage {
   const height = useThree((s) => s.size.height);
 
   return useMemo(() => {
-    const aspect = width / height;
-    const portrait = width < 900 && aspect < 1.1;
-    const panel = portrait ? 0 : Math.min(0.42, (width < 1200 ? 330 : 410) / width);
-    const availW = 1 - panel;
-    const availH = portrait ? 0.58 : 0.84;
-
-    const rx = portrait ? 2.75 : 3.6;
-    const rz = 3;
-    const ry = portrait ? 2.4 : 2.05;
-
     const tan = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
-    const distForW = (rx + 1) / (tan * aspect * availW);
-    const distForH = (ry + 1.2) / (tan * availH);
-    const dist = Math.max(11, distForW, distForH) + rz * 0.6;
+    const worldH = 2 * DIST * tan;
+    const worldW = (worldH * width) / height;
+    const unit = worldH / height;
 
-    const worldH = 2 * dist * tan;
-    const worldW = worldH * aspect;
-    const ox = -(panel / 2) * worldW;
-    const oy = portrait ? ((1 - availH) / 2) * worldH - worldH * 0.035 : 0;
+    const portrait = width < height * 1.05;
+    const short = height < 560;
+    const top = short ? 74 : portrait ? 128 : 165;
+    const bottom = short ? 64 : portrait ? 196 : 170;
+    const oy = ((bottom - top) / 2) * unit;
 
-    // Sized in pixels, so the icon fits the section header on any screen.
-    const unitsPerPx = worldH / height;
-    const compact = width < 640 || height < 560;
-    const heroPx = compact ? 62 : 118;
-    const heroRight = compact ? 52 : 92;
-    const heroTop = compact ? (height < 560 ? 36 : 54) : 72;
-    const hero: [number, number] = [
-      worldW / 2 - heroRight * unitsPerPx - ox,
-      worldH / 2 - heroTop * unitsPerPx - oy,
-    ];
-    const heroScale = (heroPx * unitsPerPx) / 2;
+    const compact = width < 640 || short;
+    const cornerPx = compact ? 58 : 84;
+    const cornerX = compact ? 42 : 76;
+    const cornerY = compact ? 46 : 74;
 
-    return { dist, worldW, worldH, ox, oy, rx, rz, ry, portrait, hero, heroScale };
+    return {
+      dist: DIST,
+      width,
+      height,
+      worldW,
+      worldH,
+      unit,
+      oy,
+      regionW: (width - (portrait ? 20 : width * 0.16)) * unit,
+      regionH: (height - top - bottom) * unit,
+      corner: [-worldW / 2 + cornerX * unit, worldH / 2 - cornerY * unit - oy],
+      cornerPx,
+    };
   }, [width, height]);
 }
 
-/** Point on the tilted orbit. Angle 0 is the front of the ring, closest to the camera. */
-export function ringPoint(angle: number, stage: Stage, out: THREE.Vector3) {
-  return out.set(Math.sin(angle) * stage.rx, -Math.cos(angle) * stage.ry, Math.cos(angle) * stage.rz);
+/** Cell of the save grid: filled left to right, top to bottom, like a real card. */
+export function gridCell(index: number, count: number, stage: Stage, out: THREE.Vector3) {
+  const cols = gridCols(count, stage.width, stage.height);
+  const rows = Math.ceil(count / cols);
+  const ch = stage.regionH / rows;
+  const cw = Math.min(stage.regionW / cols, ch * 1.75);
+  const col = index % cols;
+  const row = Math.floor(index / cols);
+  out.set((col - (cols - 1) / 2) * cw, ((rows - 1) / 2 - row) * ch, 0);
+  return Math.min(cw * 0.34, ch * 0.36, 0.84);
 }

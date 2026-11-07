@@ -13,7 +13,7 @@ export type SaveSlot = {
   saved: string;
   size: string;
   blurb: string;
-  /** Atmosphere color while this save is open. Stays inside the blue family. */
+  /** Atmosphere color while this save is open. Stays close to the neutral grey. */
   tint: string;
 };
 
@@ -28,7 +28,7 @@ export const SAVES: SaveSlot[] = [
     saved: "2026/08/01",
     size: "128 KB",
     blurb: "Player profile. Who is behind this memory card, and why they build things.",
-    tint: "#1668c8",
+    tint: "#868c96",
   },
   {
     index: 1,
@@ -40,7 +40,7 @@ export const SAVES: SaveSlot[] = [
     saved: "2026/11/06",
     size: "2,240 KB",
     blurb: "Enterprise systems running in production, plus products shipped in public.",
-    tint: "#0d4fb4",
+    tint: "#808a9c",
   },
   {
     index: 2,
@@ -52,7 +52,7 @@ export const SAVES: SaveSlot[] = [
     saved: "2026/08/15",
     size: "512 KB",
     blurb: "Every checkpoint so far, from a first internship to a full-time developer role.",
-    tint: "#2a48c4",
+    tint: "#8a869c",
   },
   {
     index: 3,
@@ -64,7 +64,7 @@ export const SAVES: SaveSlot[] = [
     saved: "2026/10/20",
     size: "864 KB",
     blurb: "Fifteen credentials unlocked across web, cloud, and AI.",
-    tint: "#0f6a9c",
+    tint: "#9a9078",
   },
   {
     index: 4,
@@ -76,7 +76,7 @@ export const SAVES: SaveSlot[] = [
     saved: "2026/11/06",
     size: "384 KB",
     blurb: "A year of commits, repositories, and languages from public GitHub data.",
-    tint: "#0a7fa8",
+    tint: "#7e9488",
   },
   {
     index: 5,
@@ -88,7 +88,7 @@ export const SAVES: SaveSlot[] = [
     saved: "2026/11/07",
     size: "64 KB",
     blurb: "Open channel. Start a conversation about your next project.",
-    tint: "#14a0c8",
+    tint: "#7c98a0",
   },
 ];
 
@@ -103,7 +103,7 @@ export const SECRET_SAVE: SaveSlot = {
   saved: "????/??/??",
   size: "0 KB",
   blurb: "This file should not exist. Load at your own risk.",
-  tint: "#3a2fb0",
+  tint: "#8e7a9c",
 };
 
 export const ALL_SAVES = [...SAVES, SECRET_SAVE];
