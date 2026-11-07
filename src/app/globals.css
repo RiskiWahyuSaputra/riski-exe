@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-title: "Michroma", "Eurostile", sans-serif;
+  --font-sans: "M PLUS Rounded 1c", "Trebuchet MS", sans-serif;
+  --font-sys: "Share Tech Mono", ui-monospace, monospace;
+
+  --color-void: #020617;
+  --color-abyss: #04102e;
+  --color-navy: #071c4d;
+  --color-ocean: #0f4c9c;
+  --color-azure: #2f8fe6;
+  --color-cyan: #6fdcff;
+  --color-ice: #bfefff;
+  --color-snow: #f2fbff;
+  --color-haze: #9cc4e8;
+}
+
+:root {
+  --hairline: rgba(150, 225, 255, 0.34);
+  --panel-a: rgba(16, 66, 150, 0.5);
+  --panel-b: rgba(4, 20, 66, 0.66);
+  --glow: 0 0 14px rgba(111, 220, 255, 0.55);
+  --cut: 14px;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--color-void);
+  color: var(--color-snow);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-cyan);
+  color: var(--color-abyss);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+}
