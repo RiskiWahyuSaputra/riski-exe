@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { CERTIFICATES, ISSUERS } from "@/data/certificates";
 import { Label, Panel } from "./shared";
 
-export function Trophies() {
+export function Certificates() {
   const [issuer, setIssuer] = useState("All");
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -49,7 +49,7 @@ export function Trophies() {
           </button>
         ))}
         <span className="t-sys ml-auto text-[13px] text-cyan">
-          {CERTIFICATES.length}/{CERTIFICATES.length} UNLOCKED
+          {list.length} CERTIFICATES
         </span>
       </div>
 
@@ -105,7 +105,7 @@ export function Trophies() {
                   <Image src={current.image} alt={`Certificate: ${current.title}`} fill sizes="860px" className="object-contain" />
                 </div>
                 <div className="mt-3">
-                  <Label aside={`${index + 1} / ${list.length}`}>TROPHY No.{current.id}</Label>
+                  <Label aside={`${index + 1} / ${list.length}`}>CERTIFICATE No.{current.id}</Label>
                   <h2 className="text-[16px] font-bold text-snow">{current.title}</h2>
                   <p className="t-sys mt-1 text-[13px] text-ice">
                     {current.issuer} / {current.date}

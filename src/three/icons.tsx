@@ -1,10 +1,10 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef, type ReactNode, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import * as THREE from "three";
 import type { IconKind } from "@/data/saves";
-import { screenTexture } from "./textures";
+import { certificateTexture, screenTexture } from "./textures";
 
 /** 0 at rest, 1 while the slot is highlighted. Each icon animates off this. */
 type Active = RefObject<number>;
@@ -261,64 +261,60 @@ function Rocket({ active }: { active: Active }) {
   );
 }
 
-const CUP_PROFILE = [
-  [0.0, -0.3],
-  [0.1, -0.3],
-  [0.13, -0.2],
-  [0.3, -0.02],
-  [0.44, 0.3],
-  [0.5, 0.74],
-  [0.46, 0.76],
-  [0.4, 0.34],
-  [0.0, 0.1],
-].map(([x, y]) => new THREE.Vector2(x, y));
+/* 04: a framed certificate with a gold seal and ribbons */
+function Certificate({ active }: { active: Active }) {
+  const seal = useRef<THREE.Group>(null);
+  const [face, setFace] = useState<THREE.Texture | null>(null);
 
-/* 04: a gold trophy */
-function Trophy({ active }: { active: Active }) {
-  const star = useRef<THREE.Mesh>(null);
-  const starGeometry = useMemo(() => {
-    const s = new THREE.Shape();
-    for (let i = 0; i < 10; i++) {
-      const r = i % 2 === 0 ? 0.17 : 0.075;
-      const a = (i / 10) * Math.PI * 2 + Math.PI / 2;
-      if (i === 0) s.moveTo(Math.cos(a) * r, Math.sin(a) * r);
-      else s.lineTo(Math.cos(a) * r, Math.sin(a) * r);
-    }
-    s.closePath();
-    return new THREE.ExtrudeGeometry(s, { depth: 0.05, bevelEnabled: false });
+  useEffect(() => {
+    let alive = true;
+    document.fonts.load('700 34px "M PLUS Rounded 1c"').then(() => {
+      if (alive) setFace(certificateTexture());
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useFrame((state) => {
-    if (star.current) star.current.scale.setScalar(1 + active.current * 0.14 * (1 + Math.sin(state.clock.elapsedTime * 6)));
+    if (seal.current) {
+      seal.current.rotation.z = state.clock.elapsedTime * 0.8 * active.current;
+      seal.current.scale.setScalar(1 + active.current * 0.1);
+    }
   });
 
   return (
-    <group position={[0, -0.05, 0]} scale={1.08}>
-      <Part>
-        <latheGeometry args={[CUP_PROFILE, 9]} />
-        <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
+    <group rotation={[-0.08, 0, 0.05]} scale={1.04}>
+      <Part position={[0, 0, -0.05]}>
+        <boxGeometry args={[2.06, 1.54, 0.08]} />
+        <Flat color="#17498f" metal={0.3} rough={0.4} />
       </Part>
-      {[-1, 1].map((side) => (
-        <Part key={side} position={[side * 0.44, 0.42, 0]} rotation={[0, side > 0 ? 0 : Math.PI, -Math.PI / 2 + 0.1]}>
-          <torusGeometry args={[0.2, 0.045, 5, 8, Math.PI]} />
-          <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
+      <Part position={[0, 0, 0.005]}>
+        <boxGeometry args={[1.86, 1.34, 0.03]} />
+        <Flat color="#fbf6e6" />
+      </Part>
+      {face && (
+        <mesh position={[0, 0, 0.022]}>
+          <planeGeometry args={[1.84, 1.32]} />
+          <meshBasicMaterial map={face} toneMapped={false} />
+        </mesh>
+      )}
+      {[-0.1, 0.1].map((x) => (
+        <Part key={x} position={[0.52 + x, -0.72, 0.07]} rotation={[0, 0, x * 2]}>
+          <boxGeometry args={[0.14, 0.44, 0.02]} />
+          <Flat color="#d8352a" />
         </Part>
       ))}
-      <Part position={[0, -0.44, 0]}>
-        <cylinderGeometry args={[0.09, 0.14, 0.32, 6]} />
-        <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
-      </Part>
-      <Part position={[0, -0.64, 0]}>
-        <boxGeometry args={[0.66, 0.14, 0.5]} />
-        <Flat color="#0f4c9c" metal={0.4} rough={0.35} />
-      </Part>
-      <Part position={[0, -0.78, 0]}>
-        <boxGeometry args={[0.86, 0.14, 0.66]} />
-        <Flat color="#0a3478" metal={0.4} rough={0.35} />
-      </Part>
-      <mesh ref={star} geometry={starGeometry} position={[0, 0.42, 0.44]} rotation={[-0.14, 0, 0]}>
-        <Flat color="#fff4c8" metal={0.3} rough={0.3} glow="#ffe08a" power={0.7} />
-      </mesh>
+      <group ref={seal} position={[0.52, -0.42, 0.1]}>
+        <Part rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.25, 0.25, 0.06, 12]} />
+          <Flat color="#ffc02e" metal={0.42} rough={0.32} glow="#9a5c00" power={0.75} />
+        </Part>
+        <Part position={[0, 0, 0.04]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.15, 0.15, 0.03, 6]} />
+          <Flat color="#fff0b0" metal={0.3} rough={0.3} glow="#ffe08a" power={0.5} />
+        </Part>
+      </group>
     </group>
   );
 }
@@ -465,8 +461,8 @@ export function SaveIcon({ kind, active }: { kind: IconKind; active: Active }) {
       return <Laptop active={active} />;
     case "rocket":
       return <Rocket active={active} />;
-    case "trophy":
-      return <Trophy active={active} />;
+    case "certificate":
+      return <Certificate active={active} />;
     case "cube":
       return <PixelCube active={active} />;
     case "crystal":

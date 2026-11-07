@@ -66,7 +66,8 @@ function Slot({ save, stage }: { save: SaveSlot; stage: Stage }) {
 
     if (spin.current) {
       const s = spin.current;
-      if (lit) {
+      // In a section header the icon faces front, so its details stay readable.
+      if (lit && phase !== "section" && phase !== "switching") {
         s.rotation.y += dt * 1.15;
       } else {
         // Settle back to facing the viewer with a slow sway, as idle save icons do.

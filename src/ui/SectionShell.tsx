@@ -4,20 +4,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, type ReactNode } from "react";
 import { ALL_SAVES, type IconKind } from "@/data/saves";
 import { slotCount, useSystem } from "@/lib/store";
+import { Certificates } from "@/sections/Certificates";
 import { Contact } from "@/sections/Contact";
 import { DevRoom } from "@/sections/DevRoom";
 import { Journey } from "@/sections/Journey";
 import { Profile } from "@/sections/Profile";
 import { Projects } from "@/sections/Projects";
 import { Stats } from "@/sections/Stats";
-import { Trophies } from "@/sections/Trophies";
 import { LegendButton } from "./Chrome";
 
 const CONTENT: Record<IconKind, ReactNode> = {
   character: <Profile />,
   laptop: <Projects />,
   rocket: <Journey />,
-  trophy: <Trophies />,
+  certificate: <Certificates />,
   cube: <Stats />,
   crystal: <Contact />,
   glitch: <DevRoom />,

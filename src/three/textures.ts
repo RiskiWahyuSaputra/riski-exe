@@ -42,6 +42,38 @@ export function labelTexture() {
   return toTexture(el);
 }
 
+/** Face of the 3D certificate. Drawn after fonts load, so the type is right. */
+export function certificateTexture() {
+  const [el, g] = canvas(512, 368);
+  g.fillStyle = "#fbf6e6";
+  g.fillRect(0, 0, 512, 368);
+  g.strokeStyle = "#1f5fb0";
+  g.lineWidth = 10;
+  g.strokeRect(16, 16, 480, 336);
+  g.strokeStyle = "#d9a520";
+  g.lineWidth = 3;
+  g.strokeRect(32, 32, 448, 304);
+
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillStyle = "#123a78";
+  g.font = '700 46px "M PLUS Rounded 1c"';
+  g.fillText("CERTIFICATE", 256, 88);
+  g.fillStyle = "#6a6a64";
+  g.font = '500 20px "M PLUS Rounded 1c"';
+  g.fillText("awarded to", 256, 134);
+  g.fillStyle = "#1a1a1a";
+  g.font = '700 34px "M PLUS Rounded 1c"';
+  g.fillText("Riski Wahyu Saputra", 256, 176);
+
+  g.fillStyle = "#b8b4a4";
+  g.fillRect(116, 214, 280, 7);
+  g.fillRect(156, 236, 200, 7);
+  g.fillStyle = "#123a78";
+  g.fillRect(70, 296, 120, 4);
+  return toTexture(el);
+}
+
 export function screenTexture() {
   const [el, g] = canvas(256, 160);
   g.fillStyle = "#03122e";

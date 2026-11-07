@@ -1,4 +1,4 @@
-export type IconKind = "character" | "laptop" | "rocket" | "trophy" | "cube" | "crystal" | "glitch";
+export type IconKind = "character" | "laptop" | "rocket" | "certificate" | "cube" | "crystal" | "glitch";
 
 export type SaveSlot = {
   index: number;
@@ -57,13 +57,13 @@ export const SAVES: SaveSlot[] = [
   {
     index: 3,
     slot: "04",
-    file: "TROPHY_DATA",
+    file: "CERTIFICATE_DATA",
     title: "Certificates",
-    hash: "trophies",
-    icon: "trophy",
+    hash: "certificates",
+    icon: "certificate",
     saved: "2026/10/20",
     size: "864 KB",
-    blurb: "Fifteen credentials unlocked across web, cloud, and AI.",
+    blurb: "Fifteen certificates earned across web, cloud, and AI.",
     tint: "#9a9078",
   },
   {
